@@ -2498,7 +2498,7 @@ class WinView(discord.ui.View):
 
         if not isequipmentsteal:  # goldsteal
             if losergold >= 1000:
-                goldammount = (self.goldstealpercent/100) * losergold
+                goldammount = round((self.goldstealpercent/100) * losergold)
                 mycursor.execute("UPDATE Users SET gold = gold + %(gold)s WHERE userID=%(userID)s",
                                  {'userID': self.winner.id, 'gold': goldammount})
                 mycursor.execute("UPDATE Users SET gold = gold - %(gold)s WHERE userID=%(userID)s",
