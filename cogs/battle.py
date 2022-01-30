@@ -90,7 +90,7 @@ class ConfirmFreak(discord.ui.View):
         self.clear_items()
         self.stop()
 
-        mycursor.execute("INSERT INTO Users (userID, gold, freak, hunted, hd, sb, o, ss, ih, pa, rn, ma, eh, vv, d ,t) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        mycursor.execute("INSERT INTO Users (userID, gold, freak, hunted, hd, sb, o, ss, ih, pa, rn, ma, eh, vv, d ,tb) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                          (self.ctx.author.id, 0, self.freakyid, False, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
         mydb.commit()
 
