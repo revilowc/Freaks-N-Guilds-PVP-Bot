@@ -1872,7 +1872,7 @@ class Equip(discord.ui.View):
         await interaction.response.edit_message(view=view)
         view.msg = await interaction.original_message()
 
-    @discord.ui.button(label='Close Armoury', style=discord.ButtonStyle.green)
+    @discord.ui.button(label='Close Armoury', style=discord.ButtonStyle.red)
     async def close(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user != self.ctx.author:
             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.ctx.author.mention}. Use your own commands!**", color=embedcolor), ephemeral=True)
