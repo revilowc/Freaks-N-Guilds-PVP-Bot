@@ -2388,14 +2388,14 @@ class BattleDropdown(discord.ui.Select):
             self.view.round += 1
 
             p1win = None
-            if self.view.p1health < 0 and self.view.p2health < 0:
+            if self.view.p1health <= 0 and self.view.p2health <= 0:
                 if self.view.p1health < self.view.p2health:
                     p1win = False
                 else:
                     p1win = True
-            elif self.view.p1health < 0:
+            elif self.view.p1health <= 0:
                 p1win = False
-            elif self.view.p2health < 0:
+            elif self.view.p2health <= 0:
                 p1win = True
 
             if p1win == None:
@@ -2490,7 +2490,7 @@ class WinView(discord.ui.View):
         equipmentstealvalue = random.randrange(1, 101)
         if equipmentstealvalue > self.equipmentstealpercent:
             isequipmentsteal = False
-        else:
+        elif equipmentstealvalue < self.equipmentstealpercent and (equipment[0] != None or equipment[1] != None or equipment[2] != None):
             isequipmentsteal = True
 
         if equipment[0] != None or equipment[1] != None or equipment[2] != None:
