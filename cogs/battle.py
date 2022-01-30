@@ -2515,14 +2515,14 @@ class WinView(discord.ui.View):
 
             elif losergold <= 330 and canstealequipment:
                 isequipmentsteal = True
-
+                goldammount = 0
+                
             else:
                 goldammount = 200
                 mycursor.execute("UPDATE Users SET gold = gold + %(gold)s WHERE userID=%(userID)s",
                                  {'userID': self.winner.id, 'gold': goldammount})
                 mydb.commit()
 
-            goldammount = 0
             embed = discord.Embed(
                 title=f"{self.winner.display_name} won a battle against {self.loser.display_name}!", color=embedcolor)
             embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
