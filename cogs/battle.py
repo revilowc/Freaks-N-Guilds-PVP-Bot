@@ -3097,6 +3097,9 @@ class Battle(commands.Cog):
             listequipment = ""
             for equip in equipmentnames:
                 listequipment = f"{listequipment}{equip}\n"
+                
+            if listequipment == "":
+                listequipment = "No equipment"
 
             embed.add_field(name="Freak", value=freakname, inline=False)
             embed.add_field(name="Equipment", value=listequipment, inline=False)
