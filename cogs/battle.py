@@ -454,49 +454,7 @@ class RoleLeaderboardDropdownView(discord.ui.View):
 
 
 class EquipDropdown(discord.ui.Select):
-    def __init__(self):
-
-        options = []
-        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb FROM Users WHERE userID=%(userID)s",
-                         {'userID': interaction.user.id})
-
-        for item in mycursor:
-            if item[0] > 0:
-                options.append(discord.SelectOption(label='Hidden Dagger',
-                                                    description="+10 Attack Damage for High Attack"))
-            if item[1] > 0:
-                options.append(discord.SelectOption(label='Standard Blade',
-                                                    description="+5 Attack Damage for Low Attack"))
-            if item[2] > 0:
-                options.append(discord.SelectOption(label='Ooze',
-                                                    description="+10 Attack Damage for All Attacks"))
-            if item[3] > 0:
-                options.append(discord.SelectOption(label='Standard Shield',
-                                                    description="+10 Defense against High Attack"))
-            if item[4] > 0:
-                options.append(discord.SelectOption(label='Iron Helmet',
-                                                    description="+5 Defense against Low Attack"))
-            if item[5] > 0:
-                options.append(discord.SelectOption(label='Platinum Armour',
-                                                    description="+10 Defense"))
-            if item[6] > 0:
-                options.append(discord.SelectOption(label='Rune Necklace',
-                                                    description="+10% Accuracy for Low Attack"))
-            if item[7] > 0:
-                options.append(discord.SelectOption(label='Mystic Artifact',
-                                                    description="+10% Accuracy for High Attack"))
-            if item[8] > 0:
-                options.append(discord.SelectOption(label='Enchanted Headpiece',
-                                                    description="+10% Accuracy for All Attacks"))
-            if item[9] > 0:
-                options.append(discord.SelectOption(label='Vital Vial',
-                                                    description="+20 Health"))
-            if item[10] > 0:
-                options.append(discord.SelectOption(label='Deathspike',
-                                                    description="+15% Pierce Chance for All Attacks"))
-            if item[11] > 0:
-                options.append(discord.SelectOption(label='Tea Bag',
-                                                    description="+10% Chance to Equipment Steal and +5% Value to Gold Steal"))
+    def __init__(self, options):
 
         super().__init__(placeholder='Please select an item to equip...',
                          min_values=1, max_values=1, options=options)
@@ -1853,7 +1811,49 @@ class EquipDropDownView(discord.ui.View):
         self.ctx = ctx
         self.equipment = equipment
 
-        self.add_item(EquipDropdown())
+        options = []
+        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.ctx.author.id})
+
+        for item in mycursor:
+            if item[0] > 0:
+                options.append(discord.SelectOption(label='Hidden Dagger',
+                                                    description="+10 Attack Damage for High Attack"))
+            if item[1] > 0:
+                options.append(discord.SelectOption(label='Standard Blade',
+                                                    description="+5 Attack Damage for Low Attack"))
+            if item[2] > 0:
+                options.append(discord.SelectOption(label='Ooze',
+                                                    description="+10 Attack Damage for All Attacks"))
+            if item[3] > 0:
+                options.append(discord.SelectOption(label='Standard Shield',
+                                                    description="+10 Defense against High Attack"))
+            if item[4] > 0:
+                options.append(discord.SelectOption(label='Iron Helmet',
+                                                    description="+5 Defense against Low Attack"))
+            if item[5] > 0:
+                options.append(discord.SelectOption(label='Platinum Armour',
+                                                    description="+10 Defense"))
+            if item[6] > 0:
+                options.append(discord.SelectOption(label='Rune Necklace',
+                                                    description="+10% Accuracy for Low Attack"))
+            if item[7] > 0:
+                options.append(discord.SelectOption(label='Mystic Artifact',
+                                                    description="+10% Accuracy for High Attack"))
+            if item[8] > 0:
+                options.append(discord.SelectOption(label='Enchanted Headpiece',
+                                                    description="+10% Accuracy for All Attacks"))
+            if item[9] > 0:
+                options.append(discord.SelectOption(label='Vital Vial',
+                                                    description="+20 Health"))
+            if item[10] > 0:
+                options.append(discord.SelectOption(label='Deathspike',
+                                                    description="+15% Pierce Chance for All Attacks"))
+            if item[11] > 0:
+                options.append(discord.SelectOption(label='Tea Bag',
+                                                    description="+10% Chance to Equipment Steal and +5% Value to Gold Steal"))
+
+        self.add_item(EquipDropdown(options))
 
     async def on_timeout(self):
         if self.msg:
@@ -2337,11 +2337,14 @@ class BattleDropdown(discord.ui.Select):
             self.view.p1responded = True
 
             p1win = None
+            draw = False
             if self.view.p1health <= 0 and self.view.p2health <= 0 and self.view.p1responded and self.view.p2responded:
                 if self.view.p1health < self.view.p2health:
                     p1win = False
-                else:
+                elif self.view.p1health > self.view.p2health:
                     p1win = True
+                else:
+                    draw = True
 
             elif self.view.p1health <= 0 and self.view.p1responded and self.view.p2responded:
                 p1win = False
@@ -2375,6 +2378,25 @@ class BattleDropdown(discord.ui.Select):
                 await interaction.response.edit_message(embed=embed, view=view)
 
                 view.msg = await interaction.original_message()
+
+            elif self.view.p1responded and self.view.p2responded and draw:
+                mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
+                                 {'userID': self.view.opponent.id})
+                mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
+                                 {'userID': self.view.ctx.author.id})
+                mydb.commit()
+
+                embed = discord.Embed(
+                    title=f"{self.view.ctx.author.display_name} drew with {self.view.opponent.display_name}!", description="You have both been granted 100 Gold for your valiant efforts!", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
+                embed.set_author(name=f"{self.winner.display_name}",
+                                 icon_url=self.winner.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+                embed.set_thumbnail(url=self.winner.guild.icon.url)
+                embed.add_field(
+                    name="Logged Changes", value=f"`+100 Gold` for {self.view.ctx.author.display_name}\n`+100 Gold` for {self.view.opponent.display_name}")
+
+                await interaction.response.edit_message(embed=embed)
 
             elif p1win == None:
                 embed = discord.Embed(
@@ -2649,11 +2671,14 @@ class BattleDropdown(discord.ui.Select):
             self.view.p2responded = True
 
             p1win = None
+            draw = False
             if self.view.p1health <= 0 and self.view.p2health <= 0 and self.view.p1responded and self.view.p2responded:
                 if self.view.p1health < self.view.p2health:
                     p1win = False
-                else:
+                elif self.view.p1health > self.view.p2health:
                     p1win = True
+                else:
+                    draw = True
 
             elif self.view.p1health <= 0 and self.view.p1responded and self.view.p2responded:
                 p1win = False
@@ -2687,6 +2712,25 @@ class BattleDropdown(discord.ui.Select):
                 await interaction.response.edit_message(embed=embed, view=view)
 
                 view.msg = await interaction.original_message()
+
+            elif self.view.p1responded and self.view.p2responded and draw:
+                mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
+                                 {'userID': self.view.opponent.id})
+                mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
+                                 {'userID': self.view.ctx.author.id})
+                mydb.commit()
+
+                embed = discord.Embed(
+                    title=f"{self.view.ctx.author.display_name} drew with {self.view.opponent.display_name}!", description="You have both been granted 100 Gold for your valiant efforts!", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
+                embed.set_author(name=f"{self.winner.display_name}",
+                                 icon_url=self.winner.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+                embed.set_thumbnail(url=self.winner.guild.icon.url)
+                embed.add_field(
+                    name="Logged Changes", value=f"`+100 Gold` for {self.view.ctx.author.display_name}\n`+100 Gold` for {self.view.opponent.display_name}")
+
+                await interaction.response.edit_message(embed=embed)
 
             elif p1win == None:
                 embed = discord.Embed(
@@ -2829,51 +2873,51 @@ class WinView(discord.ui.View):
 
         if isequipmentsteal:  # equipmentsteal
             if "TB" in equipment:
-                reward = "`Tea Bag`"
+                reward = "Tea Bag"
                 item = "tb"
 
             elif "D" in equipment:
-                reward = "`Deathspike`"
+                reward = "Deathspike"
                 item = "d"
 
             elif "EH" in equipment:
-                reward = "`Enchanted Headpiece`"
+                reward = "Enchanted Headpiece"
                 item = "eh"
 
             elif "MA" in equipment:
-                reward = "`Mystic Artifact`"
+                reward = "Mystic Artifact"
                 item = "ma"
 
             elif "PA" in equipment:
-                reward = "`Platinum Armour`"
+                reward = "Platinum Armour"
                 item = "pa"
 
             elif "O" in equipment:
-                reward = "`Ooze`"
+                reward = "Ooze"
                 item = "o"
 
             elif "VV" in equipment:
-                reward = "`Vital Vial`"
+                reward = "Vital Vial"
                 item = "vv"
 
             elif "RN" in equipment:
-                reward = "`Rune Necklace`"
+                reward = "Rune Necklace"
                 item = "rn"
 
             elif "IH" in equipment:
-                reward = "`Iron Helmet`"
+                reward = "Iron Helmet"
                 item = "ih"
 
             elif "SB" in equipment:
-                reward = "`Standard Blade`"
+                reward = "Standard Blade"
                 item = "sb"
 
             elif "SS" in equipment:
-                reward = "`Standard Shield`"
+                reward = "Standard Shield"
                 item = "ss"
 
             elif "HD" in equipment:
-                reward = "`Hidden Dagger`"
+                reward = "Hidden Dagger"
                 item = "hd"
 
             mycursor.execute("UPDATE Users SET {} = {} + 1 WHERE userID=%(userID)s".format(item, item),
@@ -3364,7 +3408,7 @@ class ShopDropdown(discord.ui.Select):
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-            #embed.set_thumbnail(url=hdimgurl)
+            embed.set_thumbnail(url=hdimgurl)
             embed.timestamp = discord.utils.utcnow()
 
             cost = hdcost
@@ -3377,7 +3421,7 @@ class ShopDropdown(discord.ui.Select):
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-            #embed.set_thumbnail(url=sbimgurl)
+            embed.set_thumbnail(url=sbimgurl)
             embed.timestamp = discord.utils.utcnow()
 
             cost = sbcost
@@ -3892,7 +3936,9 @@ class Battle(commands.Cog):
                 else:
                     peasantusers.append(member)
 
+        count = 0
         for user in whitelistusers:
+            count += 1
             mycursor.execute("SELECT gold FROM users WHERE userID=%(userID)s", {'userID': user.id})
 
             for gold in mycursor:
@@ -3909,12 +3955,14 @@ class Battle(commands.Cog):
                 if len(whitelistfields) == 10:
                     break
 
-        if not whitelistfields:
+        if not whitelistfields or (count % 10) != 0:
             whitelistfields.append(description)
             description = ""
             membersinleaderboard = 0
 
+        count = 0
         for user in peasantusers:
+            count += 1
             mycursor.execute("SELECT gold FROM users WHERE userID=%(userID)s", {'userID': user.id})
 
             for gold in mycursor:
@@ -3931,7 +3979,7 @@ class Battle(commands.Cog):
                 if len(peasantfields) == 10:
                     break
 
-        if not peasantfields:
+        if not peasantfields or (count % 10) != 0:
             peasantfields.append(description)
             description = ""
             membersinleaderboard = 0
