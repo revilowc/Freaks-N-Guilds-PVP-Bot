@@ -3962,7 +3962,9 @@ class Battle(commands.Cog):
         for x in myresult:
             userids.append(x[0])
 
+        count = 0
         for userid in userids:
+            count += 1
             mycursor.execute("SELECT gold FROM users WHERE userID=%(userID)s", {'userID': userid})
 
             for gold in mycursor:
@@ -3977,7 +3979,7 @@ class Battle(commands.Cog):
                 membersinleaderboard = 0
                 description = ""
 
-        if not enddescription:
+        if not enddescription or (count % 10) != 0:
             enddescription.append(description)
 
         leaderboardembed = discord.Embed(
