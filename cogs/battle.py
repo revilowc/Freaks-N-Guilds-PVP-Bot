@@ -3408,7 +3408,7 @@ class ShopDropdown(discord.ui.Select):
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-            embed.set_thumbnail(url=hdimgurl)
+#             embed.set_thumbnail(url=hdimgurl)
             embed.timestamp = discord.utils.utcnow()
 
             cost = hdcost
@@ -3421,7 +3421,7 @@ class ShopDropdown(discord.ui.Select):
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-            embed.set_thumbnail(url=sbimgurl)
+#             embed.set_thumbnail(url=sbimgurl)
             embed.timestamp = discord.utils.utcnow()
 
             cost = sbcost
