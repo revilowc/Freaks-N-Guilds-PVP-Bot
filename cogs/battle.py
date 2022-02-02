@@ -2431,9 +2431,6 @@ class BattleDropdown(discord.ui.Select):
 
                 view.msg = await interaction.original_message()
 
-        elif self.view.p1responded:
-            await interaction.response.send_message(embed=discord.Embed(description=f"**You used {self.view.p1skillused}. Please wait for {self.view.opponent.mention} to use a skill.**", color=embedcolor), ephemeral=True)
-
         if interaction.user == self.view.opponent and not self.view.p2responded:
             if self.view.p2freakyid == "V":
                 if self.values[0] == "1":
@@ -2745,9 +2742,6 @@ class BattleDropdown(discord.ui.Select):
                 await interaction.response.edit_message(embed=embed, view=view)
 
                 view.msg = await interaction.original_message()
-
-        elif self.view.p2responded:
-            await interaction.response.send_message(embed=discord.Embed(description=f"**You used {self.view.p2skillused}. Please wait for {self.view.ctx.author.mention} to use a skill.**", color=embedcolor), ephemeral=True)
 
 
 class WinView(discord.ui.View):
