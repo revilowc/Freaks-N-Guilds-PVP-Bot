@@ -3668,8 +3668,8 @@ class ShopDropdown(discord.ui.Select):
             item = "tb"
             equipmentname = f"a Tea Bag"
 
-        self.clear_items()
-        self.stop()
+        self.view.clear_items()
+        self.view.stop()
 
         view = ConfirmPurchase(self.view.ctx, cost, item, equipmentname)
 
