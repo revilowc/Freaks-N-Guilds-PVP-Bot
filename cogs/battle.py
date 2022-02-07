@@ -4112,6 +4112,12 @@ class Battle(commands.Cog):
             description = ""
             membersinleaderboard = 0
 
+        if peasantfields[0] == "":
+            peasantfields[0] = "`No users available...`"
+
+        if whitelistfields[0] == "":
+            whitelistfields[0] = "`No users available...`"
+
         leaderboardembed = discord.Embed(title="Leaderboard - Page 1", color=embedcolor)
         leaderboardembed.set_thumbnail(url=pfpurl)
         leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
@@ -4236,7 +4242,7 @@ class Battle(commands.Cog):
                     elif winequipment == "d":
                         winnings = "a Deadspike"
 
-                await ctx.respond(embed=discord.Embed(description=f"**Well done on a successful hunt {ctx.author.mention}! You have gained {winnings} from your hunt. You can't hunt again for 12 hours!**", color=embedcolor))
+                await ctx.respond(embed=discord.Embed(description=f"**Well done on a successful hunt {ctx.author.mention}! You have gained {winnings} from your hunt. You can't hunt again for 15 minutes!**", color=embedcolor))
 
     @slash_command(guild_ids=guildIDs, description="Abandon your Freak")
     async def abandonfreak(self, ctx):
