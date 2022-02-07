@@ -3772,7 +3772,7 @@ class Battle(commands.Cog):
         embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.timestamp = discord.utils.utcnow()
         mycursor.execute("SELECT gold FROM Users WHERE userID=%(userID)s",
-                         {'userID': interaction.user.id})
+                         {'userID': ctx.author.id})
 
         for x in mycursor:
             gold = x[0]
