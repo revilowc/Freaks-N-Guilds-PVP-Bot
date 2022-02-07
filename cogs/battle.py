@@ -3375,7 +3375,7 @@ class ConfirmPurchase(discord.ui.View):
             gold = x[0]
 
         if gold < self.cost:
-            await interaction.response.send_message(embed=discord.Embed(description=f"**You don't have enough Gold... {self.name} costs {self.cost} Gold! Type `/shop` if you would like to buy something else!**", color=embedcolor))
+            await interaction.response.send_message(embed=discord.Embed(description=f"**You don't have enough Gold... {self.name} costs {self.cost} Gold! Type `/buy` if you would like to buy something else!**", color=embedcolor))
             return
 
         mycursor.execute("UPDATE Users SET {} = {} + 1, gold = gold - %(gold)s WHERE userID=%(userID)s".format(
@@ -3441,7 +3441,7 @@ class ConfirmPurchase(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/shop` to go to the shop and buy more equipment with Gold!**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/buy` to go to the shop and buy more equipment with Gold!**", color=embedcolor), view=None)
 
 
 class ShopDropdown(discord.ui.Select):
@@ -3688,7 +3688,7 @@ class ShopView(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/shop` to go to the shop and buy more equipment with Gold!**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/buy` to go to the shop and buy more equipment with Gold!**", color=embedcolor), view=None)
 
 
 class ConfirmAbandon(discord.ui.View):
