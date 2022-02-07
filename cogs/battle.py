@@ -152,11 +152,11 @@ class ConfirmFreak(discord.ui.View):
 
         await self.msg.edit(view=self)
 
-        await interaction.response.send_message(embed=discord.Embed(description="**Cancelled - type `/pickfreak <freak>` to retry!**", color=embedcolor))
+        await interaction.response.send_message(embed=discord.Embed(description="**Cancelled - type `/pickfreak <vampire/werewolf/skeleton>` to retry!**", color=embedcolor))
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/pickfreak <freak>` to pick your own Freak again.**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/pickfreak <vampire/werewolf/skeleton>` to pick your own Freak again.**", color=embedcolor), view=None)
 
 
 class RoleLeaderboardDropdown(discord.ui.Select):
@@ -326,7 +326,7 @@ class RoleLeaderboardDropdownView(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/roleleaderboard` to see the role leaderboard again.**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/leaderboard` to see the role leaderboard again.**", color=embedcolor), view=None)
 
 
 class EquipDropdown(discord.ui.Select):
@@ -1733,7 +1733,7 @@ class EquipDropDownView(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/armoury` to equip more equipment.**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/equip` to equip more equipment.**", color=embedcolor), view=None)
 
 
 class Equip(discord.ui.View):
@@ -2115,7 +2115,7 @@ class Equip(discord.ui.View):
 
     async def on_timeout(self):
         if self.msg:
-            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/armoury` to equip more equipment.**", color=embedcolor), view=None)
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/equip` to equip more equipment.**", color=embedcolor), view=None)
 
 
 class BattleDropdown(discord.ui.Select):
@@ -2328,29 +2328,29 @@ class BattleDropdown(discord.ui.Select):
                             damage = self.view.p2defense + self.view.p2highdefense - self.view.p1attackhigh
                             if damage < 0:
                                 self.view.p2health += damage
-                                self.view.p1lowaccuracy += 20
+                                self.view.p1lowaccuracy += 10
                                 if self.view.p1lowaccuracy > 100:
                                     self.view.p1lowaccuracy = 100
-                                self.view.p1highaccuracy += 20
+                                self.view.p1highaccuracy += 10
                                 if self.view.p1highaccuracy > 100:
                                     self.view.p1highaccuracy = 100
                                 self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.ctx.author.mention} used {self.view.p1attackhighname} dealing {abs(damage)} Attack Damage and gaining 20% accuracy for all attacks!**"
 
                             else:
-                                self.view.p1lowaccuracy += 20
+                                self.view.p1lowaccuracy += 10
                                 if self.view.p1lowaccuracy > 100:
                                     self.view.p1lowaccuracy = 100
-                                self.view.p1highaccuracy += 20
+                                self.view.p1highaccuracy += 10
                                 if self.view.p1highaccuracy > 100:
                                     self.view.p1highaccuracy = 100
                                 self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.opponent.mention} completely blocked {self.view.ctx.author.mention}'s {self.view.p1attackhighname} with their Defense but still landed their attack and gained 20% accuracy for all attacks!**"
 
                         else:
                             self.view.p2health -= self.view.p1attackhigh
-                            self.view.p1lowaccuracy += 20
+                            self.view.p1lowaccuracy += 10
                             if self.view.p1lowaccuracy > 100:
                                 self.view.p1lowaccuracy = 100
-                            self.view.p1highaccuracy += 20
+                            self.view.p1highaccuracy += 10
                             if self.view.p1highaccuracy > 100:
                                 self.view.p1highaccuracy = 100
                             self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.ctx.author.mention} used {self.view.p1attackhighname} and completely pierced through {self.view.opponent.mention}'s Defense dealing {self.view.p1attackhigh} Attack Damage and gaining 20% accuracy for all attacks!**"
@@ -2681,29 +2681,29 @@ class BattleDropdown(discord.ui.Select):
                             damage = self.view.p1defense + self.view.p1highdefense - self.view.p2attackhigh
                             if damage < 0:
                                 self.view.p1health += damage
-                                self.view.p2lowaccuracy += 20
+                                self.view.p2lowaccuracy += 10
                                 if self.view.p2lowaccuracy > 100:
                                     self.view.p2lowaccuracy = 100
-                                self.view.p2highaccuracy += 20
+                                self.view.p2highaccuracy += 10
                                 if self.view.p2highaccuracy > 100:
                                     self.view.p2highaccuracy = 100
                                 self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.opponent.mention} used {self.view.p2attackhighname} dealing {abs(damage)} Attack Damage and gaining 20% accuracy for all attacks!**"
 
                             else:
-                                self.view.p2lowaccuracy += 20
+                                self.view.p2lowaccuracy += 10
                                 if self.view.p2lowaccuracy > 100:
                                     self.view.p2lowaccuracy = 100
-                                self.view.p2highaccuracy += 20
+                                self.view.p2highaccuracy += 10
                                 if self.view.p2highaccuracy > 100:
                                     self.view.p2highaccuracy = 100
                                 self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.ctx.author.mention} completely blocked {self.view.opponent.mention}'s {self.view.p2attackhighname} with their Defense but still landed their attack and gained 20% accuracy for all attacks!**"
 
                         else:
                             self.view.p1health -= self.view.p2attackhigh
-                            self.view.p2lowaccuracy += 20
+                            self.view.p2lowaccuracy += 10
                             if self.view.p2lowaccuracy > 100:
                                 self.view.p2lowaccuracy = 100
-                            self.view.p2highaccuracy += 20
+                            self.view.p2highaccuracy += 10
                             if self.view.p2highaccuracy > 100:
                                 self.view.p2highaccuracy = 100
                             self.view.actionperformed = f"{self.view.actionperformed}\n**{self.view.opponent.mention} used {self.view.p2attackhighname} and completely pierced through {self.view.ctx.author.mention}'s Defense dealing {self.view.p2attackhigh} Attack Damage and gaining 20% accuracy for all attacks!**"
@@ -3210,7 +3210,7 @@ class ConfirmBattle(discord.ui.View):
             if "RN" in equipped:
                 p1lowaccuracy += 10
             if "MA" in equipped:
-                p1lowaccuracy += 10
+                p1highaccuracy += ma
             if "EH" in equipped:
                 p1lowaccuracy += 10
                 p1highaccuracy += 10
@@ -3296,7 +3296,7 @@ class ConfirmBattle(discord.ui.View):
             if "RN" in equipped:
                 p2lowaccuracy += 10
             if "MA" in equipped:
-                p2lowaccuracy += 10
+                p2highaccuracy += ma
             if "EH" in equipped:
                 p2lowaccuracy += 10
                 p2highaccuracy += 10
