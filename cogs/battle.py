@@ -19,6 +19,7 @@ guildIDs = guildIDs.split(',')
 guildIDs = [int(x) for x in guildIDs]
 
 whitelistroleid = int(os.getenv('whitelistroleid'))
+godroleid = int(os.getenv('godroleid'))
 clientuserid = int(os.getenv('clientuserid'))
 token = os.getenv('bottoken')
 
@@ -3723,6 +3724,37 @@ class ConfirmAbandon(discord.ui.View):
             await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/abandonfreak` to try again!**", color=embedcolor), view=None)
 
 
+class ConfirmReset(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.msg = None
+
+    @discord.ui.button(label='Yes', style=discord.ButtonStyle.green)
+    async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.clear_items()
+        self.stop()
+
+        mycursor.execute("DELETE FROM Users")
+        mydb.commit()
+
+        await self.msg.edit(view=self)
+
+        await interaction.response.send_message(embed=discord.Embed(description=f"**Reset all Users!**", color=embedcolor), ephemeral=True)
+
+    @discord.ui.button(label='No', style=discord.ButtonStyle.red)
+    async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.clear_items()
+        self.stop()
+
+        await self.msg.edit(view=self)
+
+        await interaction.response.send_message(embed=discord.Embed(description="**Cancelled - type `/resetall` to try again!**", color=embedcolor), ephemeral=True)
+
+    async def on_timeout(self):
+        if self.msg:
+            await self.msg.edit(embed=discord.Embed(description="**Timed out... Type `/resetall` to try again!**", color=embedcolor), view=None, ephemeral=True)
+
+
 class Battle(commands.Cog):
 
     def __init__(self, client):
@@ -4257,6 +4289,16 @@ class Battle(commands.Cog):
         view = ConfirmAbandon()
 
         await ctx.respond(embed=discord.Embed(description=f"**If you abandon your freak you will lose all your hard earned Gold and equipment! Do you wish to continue?**", color=embedcolor), view=view, ephemeral=True)
+
+        view.msg = await ctx.interaction.original_message()
+
+    @slash_command(guild_ids=guildIDs, description="Resets all Users", default_permission=False)
+    @permissions.has_role(godroleid)
+    async def resetall(self, ctx):
+
+        view = ConfirmReset()
+
+        await ctx.respond(embed=discord.Embed(description=f"**Are you sure you want to reset all Users' Freaks, equipment and Gold?**", color=embedcolor), view=view, ephemeral=True)
 
         view.msg = await ctx.interaction.original_message()
 
